@@ -1,17 +1,18 @@
 package main.java.controllers;
 
-import javafx.beans.property.*;
-import javafx.collections.*;
-import javafx.fxml.*;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import main.java.DAO.*;
 import main.java.classes.*;
-import main.java.models.*;
 
-import java.net.*;
-import java.text.*;
-import java.util.*;
+import java.net.URL;
+import java.text.NumberFormat;
+import java.util.ResourceBundle;
 
 public class PropertyAssessmentDataController implements Initializable{
     public TableView<PropertyAssessment> assessmentDataTable;
@@ -30,13 +31,13 @@ public class PropertyAssessmentDataController implements Initializable{
         //sidebar view will have csv or api selected, main handles interactions between controllers
 
         //for csv;
-        dao = new CsvPropertyAssessmentDAO("Property_Short.csv");
+        //dao = new CsvPropertyAssessmentDAO("Property_Short.csv");
+        //properties = FXCollections.observableArrayList(dao.getAllProperties());
+        //assessmentDataTable.setItems(properties);
+
+        dao = new ApiPropertyAssessmentDAO();
         properties = FXCollections.observableArrayList(dao.getAllProperties());
         assessmentDataTable.setItems(properties);
-
-        //dao = new ApiPropertyAssessmentDAO();
-        //properties = FXCollections.observableArrayList(dao.getProperties("https://data.edmonton.ca/resource/q7d6-ambg.csv?$limit=100"));
-        //assessmentDataTable.setItems(properties);
 
 
         accountTableColumn.setCellValueFactory(new PropertyValueFactory<>("account"));

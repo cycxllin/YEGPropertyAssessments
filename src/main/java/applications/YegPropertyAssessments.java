@@ -1,11 +1,11 @@
 package main.java.applications;
 
 import javafx.application.Application;
-import javafx.fxml.*;
-import javafx.scene.*;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.*;
+import java.io.IOException;
 
 public class YegPropertyAssessments extends Application {
 

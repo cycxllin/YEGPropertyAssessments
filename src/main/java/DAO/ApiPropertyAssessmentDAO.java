@@ -75,6 +75,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
     @Override
     public List<PropertyAssessment> getAllProperties() {
-        return null;
+        String url = endpoint + "?$limit=100";
+        return getProperties(url);
     }
 }
