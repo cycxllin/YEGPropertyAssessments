@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controllers.PropertyAssessmentDataController">
+   <children>
+      <TableView fx:id="assessmentDataTable" prefHeight="373.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columns>
+          <TableColumn fx:id="accountTableColumn" prefWidth="75.0" text="Account" />
+          <TableColumn fx:id="addressTableColumn" prefWidth="150.0" text="Address" />
+            <TableColumn fx:id="assessedValueTableColumn" prefWidth="150.0" text="Assessed Value" />
+            <TableColumn fx:id="assessmentClassesTableColumn" prefWidth="150.0" text="Assessment Class" />
+            <TableColumn fx:id="neighbourhoodTableColumn" prefWidth="150.0" text="Neighbourhood" />
+            <TableColumn fx:id="locationTableColumn" prefWidth="200.0" text="(Latitude, Longitude)" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
