@@ -59,11 +59,13 @@ public class PropertyAssessmentDataController implements Initializable{
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ObservableList<String> dataSources = FXCollections.observableArrayList(Arrays.asList("CSV File", "Edmonton's Open Data Portal"));
+        ObservableList<String> dataSources = FXCollections.observableArrayList(
+                Arrays.asList("CSV File", "Edmonton's Open Data Portal"));
         dataSourceComboBox.setItems(dataSources);
 
         //When read data clicked, get selected index from combobox, use index to load source data
-        readDataSourceButton.setOnAction(event -> loadSourceData(dataSourceComboBox.getSelectionModel().getSelectedIndex()));
+        readDataSourceButton.setOnAction(event ->
+                loadSourceData(dataSourceComboBox.getSelectionModel().getSelectedIndex()));
 
         //When search button clicked, use dao to get account number
         searchButton.setOnAction(event -> search());
@@ -99,6 +101,7 @@ public class PropertyAssessmentDataController implements Initializable{
             dao = new ApiPropertyAssessmentDAO();
         }
         properties = FXCollections.observableArrayList(dao.getAllProperties());
+
         loadDataTable();
         enableSearchReset();
         setAssessmentClasses();
@@ -129,20 +132,24 @@ public class PropertyAssessmentDataController implements Initializable{
         assessmentDataTable.setItems(properties);
 
         accountTableColumn.setCellValueFactory(new PropertyValueFactory<>("account"));
-        addressTableColumn.setCellValueFactory(property -> new SimpleObjectProperty<>(property.getValue().getLocation().getAddress()));
+        addressTableColumn.setCellValueFactory(property ->
+                new SimpleObjectProperty<>(property.getValue().getLocation().getAddress()));
         assessedValueTableColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
-        assessmentClassesTableColumn.setCellValueFactory(property -> new SimpleObjectProperty<>(property.getValue().getAssessmentClasses()));
-        neighbourhoodTableColumn.setCellValueFactory(property -> new SimpleObjectProperty<>(property.getValue().getLocation().getNeighbourhood()));
-        locationTableColumn.setCellValueFactory(property -> new SimpleStringProperty(property.getValue().getLocation().getLatLon()));
+        assessmentClassesTableColumn.setCellValueFactory(property ->
+                new SimpleObjectProperty<>(property.getValue().getAssessmentClasses()));
+        neighbourhoodTableColumn.setCellValueFactory(property ->
+                new SimpleObjectProperty<>(property.getValue().getLocation().getNeighbourhood()));
+        locationTableColumn.setCellValueFactory(property ->
+                new SimpleStringProperty(property.getValue().getLocation().getLatLon()));
     }
 
     private void search(){
         //TODO cascade search results for advanced filtering
         try {
-            properties = FXCollections.observableArrayList(dao.getByAccountNumber(Integer.parseInt(accountNumberInput.getText())));
+            properties = FXCollections.observableArrayList(dao.getByAccountNumber(
+                    Integer.parseInt(accountNumberInput.getText())));
         } catch (NumberFormatException e) {
-            // TODO message box: account number must consist of digits 0-9
-            System.out.println("Number Format Error");
+            throwAlert("Number Format Error", "Account number must consist only of digits 0-9");
             return;
         }
 
@@ -151,12 +158,18 @@ public class PropertyAssessmentDataController implements Initializable{
         //properties = FXCollections.observableArrayList(dao.getByAddress(addressInput.getText()));
 
         if (properties.stream().allMatch(PropertyAssessment::emptyProperty)){
-            //TODO message box no properties found
-            System.out.println("No properties found");
+            throwAlert("Search Results", "No properties found");
         }
         else {
             loadDataTable();
         }
+    }
+
+    private void throwAlert(String title, String message){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(message);
+        alert.showAndWait();
     }
 
     private void resetSearchFilters(){

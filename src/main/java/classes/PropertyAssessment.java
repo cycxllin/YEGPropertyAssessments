@@ -1,7 +1,6 @@
 package main.java.classes;
 
 import java.util.Objects;
-import java.util.function.Predicate;
 
 public class PropertyAssessment implements Comparable<PropertyAssessment> {
     //variables

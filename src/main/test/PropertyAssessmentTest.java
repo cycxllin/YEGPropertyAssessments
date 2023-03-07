@@ -118,10 +118,20 @@ class PropertyAssessmentTest {
 
     @Test
     void testToString() {
-        String expected = "Account = 12\nAddress = \nAssessed value = $78,000\nAssessment class = [Residential 100%]\n" +
-                "Neighbourhood = \nLocation = (90.0 -17.9)";
-        String emptyProperty = "Account = 0\nAddress = \nAssessed value = $0\nAssessment class = null\n" +
-                "Neighbourhood = \nLocation = ";
+        String expected = """
+                Account = 12
+                Address =\s
+                Assessed value = $78,000
+                Assessment class = [Residential 100%]
+                Neighbourhood =\s
+                Location = (90.0 -17.9)""";
+        String emptyProperty = """
+                Account = 0
+                Address =\s
+                Assessed value = $0
+                Assessment class = null
+                Neighbourhood =\s
+                Location =\s""";
 
         PropertyAssessment empty = new PropertyAssessment();
 

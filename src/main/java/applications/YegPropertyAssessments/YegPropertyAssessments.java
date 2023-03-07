@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class main extends Application {
+public class YegPropertyAssessments extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -15,7 +15,7 @@ public class main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(main.class.getResource("/PropertyAsessmentsDataView.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(YegPropertyAssessments.class.getResource("/PropertyAsessmentsDataView.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         primaryStage.setTitle("Edmonton Property Assessments");
         primaryStage.setScene(scene);

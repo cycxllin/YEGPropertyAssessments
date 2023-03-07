@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
-    private PropertyAssessments csvProperties;
+    private final PropertyAssessments csvProperties;
 
     public CsvPropertyAssessmentDAO(PropertyAssessments csvProperties){
         this.csvProperties = csvProperties;

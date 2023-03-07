@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
-    String endpoint = "https://data.edmonton.ca/resource/q7d6-ambg.csv";
+    final String endpoint = "https://data.edmonton.ca/resource/q7d6-ambg.csv";
 
     @Override
     public PropertyAssessment getByAccountNumber(int accountNumber) {

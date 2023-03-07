@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class CSVUtil {
     /**
-     * Reads info from file into property assesments objects
+     * Reads info from file into property assessments objects
      * @param fileName string
      * @return list of property assessment objects
      */
