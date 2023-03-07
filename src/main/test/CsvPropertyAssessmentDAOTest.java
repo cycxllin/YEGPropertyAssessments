@@ -29,8 +29,13 @@ class CsvPropertyAssessmentDAOTest {
     @Test
     void getByNeighbourhood() {
         PropertyAssessments riversedge = new PropertyAssessments(csvDAO.getByNeighbourhood("river's edge"));
-        String expected = "n = 10\nmin = $1,500\nmax = $1,530,000\nrange = $1,528,500\nmean = $762,650"
-                + "\nmedian = $869,250";
+        String expected = """
+                n = 10
+                min = $1,500
+                max = $1,530,000
+                range = $1,528,500
+                mean = $762,650
+                median = $869,250""";
 
         assertEquals(expected, riversedge.toString());
 
@@ -40,8 +45,13 @@ class CsvPropertyAssessmentDAOTest {
     void getByAssessmentClass() {
         PropertyAssessments farmland = new PropertyAssessments(csvDAO.getByAssessmentClass("Farmland"));
 
-        String expected = "n = 4\nmin = $1,500\nmax = $483,000\nrange = $481,500\nmean = $170,625"
-                + "\nmedian = $99,000";
+        String expected = """
+                n = 4
+                min = $1,500
+                max = $483,000
+                range = $481,500
+                mean = $170,625
+                median = $99,000""";
 
         assertEquals(expected, farmland.toString());
     }

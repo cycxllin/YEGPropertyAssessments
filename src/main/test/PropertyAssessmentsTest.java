@@ -65,8 +65,13 @@ class PropertyAssessmentsTest {
     @Test
     void testToString() {
         PropertyAssessments evenProperties = new PropertyAssessments(new ArrayList<>(List.of(p1, p2, p4, p5)));
-        String expectedOddProperties = "n = 5\nmin = $10\nmax = $90\nrange = $80\nmean = $" + 43
-                + "\nmedian = $45";
+        String expectedOddProperties = """
+                n = 5
+                min = $10
+                max = $90
+                range = $80
+                mean = $43
+                median = $45""";
 
         String expectedEvenProperties = "n = 4\nmin = $21\nmax = $90\nrange = $69\nmean = $" + (21+45+90+48)/4
                 + "\nmedian = $" + (45+48)/2;
