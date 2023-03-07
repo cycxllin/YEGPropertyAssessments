@@ -34,32 +34,6 @@ public class PropertyAssessments{
         return copyList(this.properties);
     }
 
-    /** Replaced by DAOs
-    public List<PropertyAssessment> getPropertiesByNeighbourhood(String neighName){
-        List<PropertyAssessment> neighProperties = new ArrayList<>();
-
-        for (PropertyAssessment property:properties) {
-            if (property.getLocation().getNeighbourhood().getName().equalsIgnoreCase(neighName)){
-                neighProperties.add(property);
-            }
-        }
-        return neighProperties;
-    }
-    public List<PropertyAssessment> getPropertiesByAssessmentClass(String aCString){
-        List<PropertyAssessment> aCProperties = new ArrayList<>();
-
-        for (PropertyAssessment property:properties) {
-            String aC1 = property.getAssessmentClasses().getClass1();
-            String aC2 = property.getAssessmentClasses().getClass2();
-            String aC3 = property.getAssessmentClasses().getClass3();
-            if (aCString.equalsIgnoreCase(aC1) ||aCString.equalsIgnoreCase(aC2) ||aCString.equalsIgnoreCase(aC3)){
-                aCProperties.add(property);
-            }
-        }
-        return aCProperties;
-    }
-     */
-
     /**
      * Find the property for a given account number if property is on list
      * @param account - int account number to find

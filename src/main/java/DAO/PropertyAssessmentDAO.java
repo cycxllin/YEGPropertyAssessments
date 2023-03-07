@@ -9,4 +9,5 @@ public interface PropertyAssessmentDAO {
     List<PropertyAssessment> getByNeighbourhood(String neighbourhood);
     List<PropertyAssessment> getByAssessmentClass(String assessmentClass);
     List<PropertyAssessment> getAllProperties();
+    List<PropertyAssessment> getByAddress(String address);
 }

@@ -20,6 +20,5 @@ public class main extends Application {
         primaryStage.setTitle("Edmonton Property Assessments");
         primaryStage.setScene(scene);
         primaryStage.show();
-
     }
 }

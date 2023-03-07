@@ -1,6 +1,7 @@
 package main.java.classes;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
 public class PropertyAssessment implements Comparable<PropertyAssessment> {
     //variables
@@ -64,6 +65,11 @@ public class PropertyAssessment implements Comparable<PropertyAssessment> {
         PropertyAssessment that = (PropertyAssessment) o;
         return account == that.account && value == that.value && Objects.equals(garage, that.garage) &&
                 Objects.equals(location, that.location) && Objects.equals(assessmentClasses, that.assessmentClasses);
+    }
+
+    public boolean emptyProperty(){
+        PropertyAssessment empty = new PropertyAssessment();
+        return this.equals(empty);
     }
 
     @Override
