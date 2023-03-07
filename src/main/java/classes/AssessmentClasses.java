@@ -1,6 +1,6 @@
 package main.java.classes;
 
-import java.util.Objects;
+import java.util.*;
 
 public class AssessmentClasses{
     private int classPer1;
@@ -50,6 +50,21 @@ public class AssessmentClasses{
 
     public String getClass3() {
         return class3;
+    }
+
+    public List<String> getClassNames(){
+        ArrayList<String> names = new ArrayList<>();
+        if (class3 != null && !class3.isEmpty()){
+            names.add(class1);
+            names.add(class2);
+            names.add(class3);
+        } else if (class2!= null && !class2.isEmpty()) {
+            names.add(class1);
+            names.add(class2);
+        } else if (class1 != null && !class1.isEmpty()) {
+            names.add(class1);
+        }
+        return names;
     }
 
     //setters

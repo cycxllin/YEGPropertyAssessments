@@ -28,6 +28,11 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
         return csvProperties.getAllProperties();
     }
 
+    @Override
+    public List<PropertyAssessment> getByAddress(String address) {
+        return null;
+    }
+
     public static List<PropertyAssessment> importCSVData(String fileName) {
         ArrayList<PropertyAssessment> properties = new ArrayList<>();
         String line;
