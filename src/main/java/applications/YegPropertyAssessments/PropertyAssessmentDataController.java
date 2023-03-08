@@ -145,6 +145,7 @@ public class PropertyAssessmentDataController implements Initializable{
 
     private void search(){
         //TODO cascade search results for advanced filtering
+
         try {
             properties = FXCollections.observableArrayList(dao.getByAccountNumber(
                     Integer.parseInt(accountNumberInput.getText())));
@@ -155,6 +156,7 @@ public class PropertyAssessmentDataController implements Initializable{
 
         //properties = FXCollections.observableArrayList(dao.getByNeighbourhood(neighbourhoodInput.getText()));
         //properties = FXCollections.observableArrayList(dao.getByAssessmentClass(assessmentClassComboBox.getSelectionModel().getSelectedItem()));
+        //properties = FXCollections.observableArrayList(dao.getByAddress(addressInput.getText()));
         //properties = FXCollections.observableArrayList(dao.getByAddress(addressInput.getText()));
 
         if (properties.stream().allMatch(PropertyAssessment::emptyProperty)){
@@ -180,5 +182,6 @@ public class PropertyAssessmentDataController implements Initializable{
         maxValueInput.clear();
 
         assessmentClassComboBox.setValue(null);
+        loadSourceData(dataSourceComboBox.getSelectionModel().getSelectedIndex());
     }
 }

@@ -1,8 +1,6 @@
 package main.java.DAO;
 
-import main.java.classes.CSVUtil;
-import main.java.classes.PropertyAssessment;
-import main.java.classes.PropertyAssessments;
+import main.java.classes.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,8 +27,21 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
     }
 
     @Override
-    public List<PropertyAssessment> getByAddress(String address) {
-        return null;
+    public List<PropertyAssessment> getByAddress(String suite, int housenumber, String streetName) {
+        //make Address from string
+        Address theAddress = new Address(suite, housenumber, streetName);
+
+        return csvProperties.getAllProperties().stream()
+                .filter(property -> property.getLocation().getAddress().equals(theAddress))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PropertyAssessment> getBetweenValues(int min, int max) {
+        return csvProperties.getAllProperties().stream()
+                .filter(property -> property.getValue()<= max)
+                .filter(property -> property.getValue()>= min)
+                .collect(Collectors.toList());
     }
 
     public static List<PropertyAssessment> importCSVData(String fileName) {
