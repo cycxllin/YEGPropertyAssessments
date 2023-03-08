@@ -64,8 +64,20 @@ class CsvPropertyAssessmentDAOTest {
         List<PropertyAssessment> props = new ArrayList<>(csvDAO.getBetweenValues(7000, 100000));
         List<Integer> actual = props.stream().map(PropertyAssessment::getValue)
                         .sorted().collect(Collectors.toList());
-        //TODO finish testing both null, either one null
+
+        List<Integer> expectedMaxNull = new ArrayList<>(List.of(1530000));
+        List<PropertyAssessment> props1 = new ArrayList<>(csvDAO.getBetweenValues(1520000, null));
+        List<Integer> actualMaxNull = props1.stream().map(PropertyAssessment::getValue)
+                .sorted().collect(Collectors.toList());
+
+        List<Integer> expectedMinNull = new ArrayList<>(Arrays.asList(0,0));
+        List<PropertyAssessment> props2 = new ArrayList<>(csvDAO.getBetweenValues(null, 1000));
+        List<Integer> actualMinNull = props2.stream().map(PropertyAssessment::getValue)
+                .sorted().collect(Collectors.toList());
+
         assertEquals(expected, actual);
+        assertEquals(expectedMaxNull, actualMaxNull);
+        assertEquals(expectedMinNull, actualMinNull);
     }
 
     @Test
@@ -73,9 +85,14 @@ class CsvPropertyAssessmentDAOTest {
         String expected = "18407 17 AVENUE NW";
         List<PropertyAssessment> props = new ArrayList<>(csvDAO.getByAddress("",18407, "17 AVENUE NW"));
         String actual = props.get(0).getLocation().getAddress().toString();
-        //TODO test only streetname
+
+        int lengthOnlyStreet = 4;
+        List<PropertyAssessment> onlyStreetProps = new ArrayList<>(csvDAO.getByAddress("",0, "17 AVENUE NW"));
+        int actualLength = onlyStreetProps.size();
+
         assertEquals(1, props.size());
         assertEquals(expected, actual);
+        assertEquals(lengthOnlyStreet, actualLength);
     }
 
 }

@@ -33,6 +33,11 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
             return csvProperties.getAllProperties().stream()
                     .filter(property -> property.getLocation().getAddress().getStreetName().equalsIgnoreCase(theAddress.getStreetName()))
                     .collect(Collectors.toList());
+        } else if (suite.isEmpty()) { // and there is a houseNumber
+            return csvProperties.getAllProperties().stream()
+                    .filter(property -> property.getLocation().getAddress().getStreetName().equalsIgnoreCase(theAddress.getStreetName()))
+                    .filter(property -> property.getLocation().getAddress().getHouseNumber() == theAddress.getHouseNumber())
+                    .collect(Collectors.toList());
         }
 
         return csvProperties.getAllProperties().stream()

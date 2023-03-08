@@ -15,8 +15,10 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PropertyAssessmentDataController implements Initializable{
+    //region FXMLvariables
     @FXML
     private TableView<PropertyAssessment> assessmentDataTable;
     @FXML
@@ -56,10 +58,12 @@ public class PropertyAssessmentDataController implements Initializable{
     private TextField minValueInput;
     @FXML
     private TextField maxValueInput;
-
+    //endregion
     PropertyAssessmentDAO dao;
     ObservableList<PropertyAssessment> properties;
     ObservableList<String> assessmentClasses;
+    String filename = "Property_Assessment_Data_2022.csv";
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -100,7 +104,7 @@ public class PropertyAssessmentDataController implements Initializable{
      */
     private void loadSourceData(Integer dataSource){
         if (dataSource == 0) { //dataSource is CSV
-            dao = new CsvPropertyAssessmentDAO("Property_Short.csv");
+            dao = new CsvPropertyAssessmentDAO(filename);
         } else if (dataSource == 1) { //datasource is API
             dao = new ApiPropertyAssessmentDAO();
         }
@@ -149,11 +153,63 @@ public class PropertyAssessmentDataController implements Initializable{
 
     private void search(){
         //TODO cascade search results for advanced filtering
-        //searchByAccountNumber();
-        //searchBetweenValues();
-        //properties = FXCollections.observableArrayList(dao.getByNeighbourhood(neighbourhoodInput.getText().toUpperCase()));
-        //properties = FXCollections.observableArrayList(dao.getByAssessmentClass(assessmentClassComboBox.getSelectionModel().getSelectedItem()));
-        searchByAddress();
+        List<PropertyAssessment> searchProperties = List.of(new PropertyAssessment());
+
+        List<PropertyAssessment> account,address,neighbourhood,assessmentClass,betweenValues;
+
+        List<List<PropertyAssessment>> allProps = new ArrayList<>();
+
+        //which fields am I considering?
+        //which field makes smallest list?
+        //on smallest list, apply other lists until done or smallest list is empty
+
+        if (!accountNumberInput.getText().isEmpty()) {
+            account = List.of(dao.getByAccountNumber(convertIputStringToInteger(accountNumberInput.getText())));
+            allProps.add(account);
+        }
+        if(!streetInput.getText().isEmpty()){
+            address = searchByAddress();
+            allProps.add(address);
+        }
+        if (!neighbourhoodInput.getText().isEmpty()) {
+            neighbourhood = dao.getByNeighbourhood(neighbourhoodInput.getText().toUpperCase());
+            allProps.add(neighbourhood);
+        }
+        if (assessmentClassComboBox.getValue() != null){
+            assessmentClass = dao.getByAssessmentClass(assessmentClassComboBox.getSelectionModel().getSelectedItem());
+            allProps.add(assessmentClass);
+        }
+        if (!minValueInput.getText().isEmpty() || !maxValueInput.getText().isEmpty()) {
+            betweenValues = dao.getBetweenValues(convertIputStringToInteger(minValueInput.getText()),
+                    convertIputStringToInteger(maxValueInput.getText()));
+            allProps.add(betweenValues);
+        }
+
+        //using for loop in order to terminate when list is empty
+        if (allProps.size() > 0) { //there are search terms
+            searchProperties = allProps.get(0);
+
+            if (allProps.size() > 1) {
+                for (int i = 1; i < allProps.size(); i++) {
+                    searchProperties = filterByList(searchProperties, allProps.get(i));
+                    if (searchProperties.isEmpty()) {
+                        break;
+                    }
+                }
+            }
+            loadSearchResults(searchProperties);
+        }
+    }
+
+    private List<PropertyAssessment> filterByList(List<PropertyAssessment> first, List<PropertyAssessment> second){
+        return first.stream()
+                .filter(second::contains)
+                .collect(Collectors.toList());
+    }
+
+
+    private void loadSearchResults(List<PropertyAssessment> searchResults){
+        properties = FXCollections.observableArrayList(searchResults);
 
         if (properties.stream().allMatch(PropertyAssessment::emptyProperty)){
             throwAlert("Search Results", "No properties found");
@@ -163,37 +219,18 @@ public class PropertyAssessmentDataController implements Initializable{
         }
     }
 
-    private void searchByAddress(){
+    private List<PropertyAssessment> searchByAddress(){
         Integer houseNumber = convertIputStringToInteger(houseNumberInput.getText());
-        System.out.println(suiteInput.getText().toUpperCase());
-        System.out.println(streetInput.getText().toUpperCase());
-
+        
+        //this is how no value housenumbers are stored in PropertyAssessment objects TODO test 0 with streetName
         if (houseNumber == null)
             houseNumber = 0;
+        
         try {
-            properties = FXCollections.observableArrayList(dao.getByAddress(suiteInput.getText().toUpperCase(), houseNumber,
-                    streetInput.getText().toUpperCase()));
+            return dao.getByAddress(suiteInput.getText().toUpperCase(), houseNumber, streetInput.getText().toUpperCase());
         } catch (NullPointerException e){
-            properties = FXCollections.singletonObservableList(new PropertyAssessment());
+            return List.of(new PropertyAssessment());
         }
-    }
-
-    private void searchBetweenValues(){
-        Integer min = convertIputStringToInteger(minValueInput.getText());
-        Integer max = convertIputStringToInteger(maxValueInput.getText());
-
-        if (min != null || max != null) {
-            properties = FXCollections.observableArrayList(dao.getBetweenValues(min, max));
-        }
-    }
-
-    private void searchByAccountNumber(){
-        Integer accountNumber = convertIputStringToInteger(accountNumberInput.getText());
-
-        if (accountNumber == null){
-            return;
-        }
-        properties = FXCollections.observableArrayList(dao.getByAccountNumber(accountNumber));
     }
 
     private Integer convertIputStringToInteger(String valueString){
