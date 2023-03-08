@@ -1,8 +1,6 @@
 package main.java.DAO;
 
-import main.java.classes.CSVUtil;
-import main.java.classes.PropertyAssessment;
-import main.java.classes.PropertyAssessments;
+import main.java.classes.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,8 +27,39 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
     }
 
     @Override
-    public List<PropertyAssessment> getByAddress(String address) {
-        return null;
+    public List<PropertyAssessment> getByAddress(String suite, int housenumber, String streetName) {
+        Address theAddress = new Address(suite, housenumber, streetName);
+        if (suite.isEmpty() && housenumber == 0){
+            return csvProperties.getAllProperties().stream()
+                    .filter(property -> property.getLocation().getAddress().getStreetName().equalsIgnoreCase(theAddress.getStreetName()))
+                    .collect(Collectors.toList());
+        }
+
+        return csvProperties.getAllProperties().stream()
+                .filter(property -> property.getLocation().getAddress().equals(theAddress))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PropertyAssessment> getBetweenValues(Integer min, Integer max) {
+        if (min == null && max == null) //no search params
+            return new ArrayList<>();
+
+        else if (min == null) { //max != null
+            return csvProperties.getAllProperties().stream()
+                    .filter(property -> property.getValue() <= max)
+                    .collect(Collectors.toList());
+
+        } else if (max == null) { //min != null
+            return csvProperties.getAllProperties().stream()
+                    .filter(property -> property.getValue() >= min)
+                    .collect(Collectors.toList());
+        }
+        //here when both min & max != null
+        return csvProperties.getAllProperties().stream()
+                .filter(property -> property.getValue() >= min)
+                .filter(property -> property.getValue() <= max)
+                .collect(Collectors.toList());
     }
 
     public static List<PropertyAssessment> importCSVData(String fileName) {

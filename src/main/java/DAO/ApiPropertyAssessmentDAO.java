@@ -80,7 +80,16 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     }
 
     @Override
-    public List<PropertyAssessment> getByAddress(String address) {
+    public List<PropertyAssessment> getByAddress(String suite, int housenumber, String streetName) {
+        //TODO make method
+        //TODO test method
+        return null;
+    }
+
+    @Override
+    public List<PropertyAssessment> getBetweenValues(Integer min, Integer max) {
+        //TODO make method
+        //TODO test method
         return null;
     }
 }

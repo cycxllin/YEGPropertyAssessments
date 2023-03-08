@@ -2,6 +2,9 @@ import main.java.DAO.*;
 import main.java.classes.*;
 import org.junit.jupiter.api.*;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CsvPropertyAssessmentDAOTest {
@@ -38,7 +41,6 @@ class CsvPropertyAssessmentDAOTest {
                 median = $869,250""";
 
         assertEquals(expected, riversedge.toString());
-
     }
 
     @Test
@@ -54,6 +56,26 @@ class CsvPropertyAssessmentDAOTest {
                 median = $99,000""";
 
         assertEquals(expected, farmland.toString());
+    }
+
+    @Test
+    void getBetweenValues(){
+        List<Integer> expected = new ArrayList<>(Arrays.asList(7000, 22500, 59000, 79500));
+        List<PropertyAssessment> props = new ArrayList<>(csvDAO.getBetweenValues(7000, 100000));
+        List<Integer> actual = props.stream().map(PropertyAssessment::getValue)
+                        .sorted().collect(Collectors.toList());
+        //TODO finish testing both null, either one null
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getAddress(){
+        String expected = "18407 17 AVENUE NW";
+        List<PropertyAssessment> props = new ArrayList<>(csvDAO.getByAddress("",18407, "17 AVENUE NW"));
+        String actual = props.get(0).getLocation().getAddress().toString();
+        //TODO test only streetname
+        assertEquals(1, props.size());
+        assertEquals(expected, actual);
     }
 
 }
