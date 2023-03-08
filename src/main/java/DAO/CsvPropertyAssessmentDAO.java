@@ -28,8 +28,12 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
     @Override
     public List<PropertyAssessment> getByAddress(String suite, int housenumber, String streetName) {
-        //make Address from string
         Address theAddress = new Address(suite, housenumber, streetName);
+        if (suite.isEmpty() && housenumber == 0){
+            return csvProperties.getAllProperties().stream()
+                    .filter(property -> property.getLocation().getAddress().getStreetName().equalsIgnoreCase(theAddress.getStreetName()))
+                    .collect(Collectors.toList());
+        }
 
         return csvProperties.getAllProperties().stream()
                 .filter(property -> property.getLocation().getAddress().equals(theAddress))
@@ -37,10 +41,24 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
     }
 
     @Override
-    public List<PropertyAssessment> getBetweenValues(int min, int max) {
+    public List<PropertyAssessment> getBetweenValues(Integer min, Integer max) {
+        if (min == null && max == null) //no search params
+            return new ArrayList<>();
+
+        else if (min == null) { //max != null
+            return csvProperties.getAllProperties().stream()
+                    .filter(property -> property.getValue() <= max)
+                    .collect(Collectors.toList());
+
+        } else if (max == null) { //min != null
+            return csvProperties.getAllProperties().stream()
+                    .filter(property -> property.getValue() >= min)
+                    .collect(Collectors.toList());
+        }
+        //here when both min & max != null
         return csvProperties.getAllProperties().stream()
-                .filter(property -> property.getValue()<= max)
-                .filter(property -> property.getValue()>= min)
+                .filter(property -> property.getValue() >= min)
+                .filter(property -> property.getValue() <= max)
                 .collect(Collectors.toList());
     }
 

@@ -45,7 +45,11 @@ public class PropertyAssessmentDataController implements Initializable{
     @FXML
     private TextField accountNumberInput;
     @FXML
-    private TextField addressInput;
+    private TextField suiteInput;
+    @FXML
+    private TextField houseNumberInput;
+    @FXML
+    private TextField streetInput;
     @FXML
     private TextField neighbourhoodInput;
     @FXML
@@ -103,7 +107,7 @@ public class PropertyAssessmentDataController implements Initializable{
         properties = FXCollections.observableArrayList(dao.getAllProperties());
 
         loadDataTable();
-        enableSearchReset();
+        enableSearchresetButtons();
         setAssessmentClasses();
     }
 
@@ -120,7 +124,7 @@ public class PropertyAssessmentDataController implements Initializable{
         assessmentClassComboBox.setItems(assessmentClasses);
     }
 
-    private void enableSearchReset(){
+    private void enableSearchresetButtons(){
         searchButton.setDisable(false);
         resetButton.setDisable(false);
     }
@@ -145,19 +149,11 @@ public class PropertyAssessmentDataController implements Initializable{
 
     private void search(){
         //TODO cascade search results for advanced filtering
-
-        try {
-            properties = FXCollections.observableArrayList(dao.getByAccountNumber(
-                    Integer.parseInt(accountNumberInput.getText())));
-        } catch (NumberFormatException e) {
-            throwAlert("Number Format Error", "Account number must consist only of digits 0-9");
-            return;
-        }
-
-        //properties = FXCollections.observableArrayList(dao.getByNeighbourhood(neighbourhoodInput.getText()));
+        //searchByAccountNumber();
+        //searchBetweenValues();
+        //properties = FXCollections.observableArrayList(dao.getByNeighbourhood(neighbourhoodInput.getText().toUpperCase()));
         //properties = FXCollections.observableArrayList(dao.getByAssessmentClass(assessmentClassComboBox.getSelectionModel().getSelectedItem()));
-        //properties = FXCollections.observableArrayList(dao.getByAddress(addressInput.getText()));
-        //properties = FXCollections.observableArrayList(dao.getByAddress(addressInput.getText()));
+        searchByAddress();
 
         if (properties.stream().allMatch(PropertyAssessment::emptyProperty)){
             throwAlert("Search Results", "No properties found");
@@ -165,6 +161,58 @@ public class PropertyAssessmentDataController implements Initializable{
         else {
             loadDataTable();
         }
+    }
+
+    private void searchByAddress(){
+        Integer houseNumber = convertIputStringToInteger(houseNumberInput.getText());
+        System.out.println(suiteInput.getText().toUpperCase());
+        System.out.println(streetInput.getText().toUpperCase());
+
+        if (houseNumber == null)
+            houseNumber = 0;
+        try {
+            properties = FXCollections.observableArrayList(dao.getByAddress(suiteInput.getText().toUpperCase(), houseNumber,
+                    streetInput.getText().toUpperCase()));
+        } catch (NullPointerException e){
+            properties = FXCollections.singletonObservableList(new PropertyAssessment());
+        }
+    }
+
+    private void searchBetweenValues(){
+        Integer min = convertIputStringToInteger(minValueInput.getText());
+        Integer max = convertIputStringToInteger(maxValueInput.getText());
+
+        if (min != null || max != null) {
+            properties = FXCollections.observableArrayList(dao.getBetweenValues(min, max));
+        }
+    }
+
+    private void searchByAccountNumber(){
+        Integer accountNumber = convertIputStringToInteger(accountNumberInput.getText());
+
+        if (accountNumber == null){
+            return;
+        }
+        properties = FXCollections.observableArrayList(dao.getByAccountNumber(accountNumber));
+    }
+
+    private Integer convertIputStringToInteger(String valueString){
+        Integer value = null;
+
+        if (valueString.isEmpty()){
+            return value;
+        } else {
+            try {
+                value = Integer.parseInt(valueString);
+            } catch (NumberFormatException e) {
+                throwAlert("Number Format Error", """
+                        The following fields must consist only of digits 0-9:
+                        Account Number
+                        House Number
+                        Assessed Values""");
+            }
+        }
+        return value;
     }
 
     private void throwAlert(String title, String message){
@@ -176,7 +224,9 @@ public class PropertyAssessmentDataController implements Initializable{
 
     private void resetSearchFilters(){
         accountNumberInput.clear();
-        addressInput.clear();
+        suiteInput.clear();
+        houseNumberInput.clear();
+        streetInput.clear();
         neighbourhoodInput.clear();
         minValueInput.clear();
         maxValueInput.clear();
