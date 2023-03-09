@@ -27,6 +27,7 @@ public class Neighbourhood{
     public int getId(){return this.id;}
 
     public String getName() {return this.name;}
+
     public String getWard() {return this.ward;}
 
     @Override

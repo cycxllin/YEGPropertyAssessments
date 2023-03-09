@@ -8,8 +8,7 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     final String endpoint = "https://data.edmonton.ca/resource/q7d6-ambg.csv";
@@ -83,7 +82,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         suite = URLEncoder.encode(suite, StandardCharsets.UTF_8);
 
         if (suite.isEmpty() && housenumber == 0){
-            url = endpoint + "?street_name=" + streetName;
+            url = endpoint + "?street_name=" + streetName; //TODO add like instead of equals
         } else if (suite.isEmpty()) { // and there is a houseNumber
             url = endpoint + "?$where=street_name='" + streetName
                     + URLEncoder.encode("' AND house_number='", StandardCharsets.UTF_8) + housenumber + "'";
@@ -114,5 +113,10 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         }
         System.out.println(url);
         return getProperties(url);
+    }
+
+    @Override
+    public List<PropertyAssessment> multipleParamaters(Map<String, String> params) {
+        return null;
     }
 }

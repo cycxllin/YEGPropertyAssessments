@@ -95,4 +95,11 @@ class CsvPropertyAssessmentDAOTest {
         assertEquals(lengthOnlyStreet, actualLength);
     }
 
+    @Test
+    void multipleParams(){
+        Map<String, String> params = new HashMap<>();
+        params.put("StreetName", "Jasper Avenue NW");
+        //TODO finish unit testing
+        csvDAO.multipleParamaters(params);
+    }
 }

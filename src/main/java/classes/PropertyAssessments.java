@@ -1,9 +1,6 @@
 package main.java.classes;
 import java.util.*;
 
-/**
- * This class handles all statistical functions pertaining to DAO which must contain a list of Property Assessments
- */
 public class PropertyAssessments{
     private List<PropertyAssessment> properties;
     private int number, min, max, range, median;

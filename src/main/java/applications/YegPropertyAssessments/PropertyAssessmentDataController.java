@@ -61,6 +61,15 @@ public class PropertyAssessmentDataController implements Initializable{
     PropertyAssessmentDAO dao;
     ObservableList<PropertyAssessment> properties;
     ObservableList<String> assessmentClasses;
+    Map<String, String> params;
+    String account = "accountNumber";
+    String suite = "suite";
+    String house = "houseNumber";
+    String street = "streetName";
+    String neighbourhood = "neighbourhood";
+    String aC = "assessmentClass";
+    String min = "minValue";
+    String max = "maxValue";
     String filename = "Property_Assessment_Data__Current_Calendar_Year_.csv";
 
 
@@ -68,6 +77,7 @@ public class PropertyAssessmentDataController implements Initializable{
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ObservableList<String> dataSources = FXCollections.observableArrayList(
                 Arrays.asList("CSV File", "Edmonton's Open Data Portal"));
+
         dataSourceComboBox.setItems(dataSources);
 
         //When read data clicked, get selected index from combobox, use index to load source data
@@ -150,76 +160,34 @@ public class PropertyAssessmentDataController implements Initializable{
                 new SimpleStringProperty(property.getValue().getLocation().getLatLon()));
     }
 
-    private void search(){
-        //TODO cascade search results for advanced filtering
-        List<PropertyAssessment> searchProperties = List.of(new PropertyAssessment());
+    private void search() {
+        //build earch param map
+        params = new HashMap<>();
 
-        //return property if account number is requested; only ever one property per account
-        if (!accountNumberInput.getText().isEmpty()) {
-            loadSearchResults(List.of(dao.getByAccountNumber(convertIputStringToInteger(accountNumberInput.getText()))));
-            return;
-        }
+        addTextFieldToParamMap(accountNumberInput, account);
+        addTextFieldToParamMap(suiteInput, suite);
+        addTextFieldToParamMap(houseNumberInput, house);
+        addTextFieldToParamMap(streetInput, street);
+        addTextFieldToParamMap(neighbourhoodInput, neighbourhood);
+        addTextFieldToParamMap(minValueInput, min);
+        addTextFieldToParamMap(maxValueInput, max);
 
-        String street = streetInput.getText();
-        String neighbourhood = neighbourhoodInput.getText().toUpperCase();
-        String aC = assessmentClassComboBox.getSelectionModel().getSelectedItem();
-        String min = minValueInput.getText();
-        String max = maxValueInput.getText();
+       if (assessmentClassComboBox.getValue() != null) {
+           params.put(aC, assessmentClassComboBox.getValue());
+       }
+        System.out.println(params);
 
-        List<String> searchParams= new ArrayList<>(Arrays.asList(street, neighbourhood, aC, min, max));
-
-        System.out.println(searchParams);
-
-        //initialize searchProperties with the most restrictive search param
-        for (int i = 0; i<searchParams.size();i++){
-            String temp = searchParams.get(i);
-            if (temp!=null && !temp.isEmpty()){
-                switch (i) {
-                    case 0 -> searchProperties = searchByAddress();
-                    case 1 -> searchProperties = dao.getByNeighbourhood(neighbourhood);
-                    case 2 -> searchProperties = dao.getByAssessmentClass(aC);
-                    case 3, 4 -> searchProperties = dao.getBetweenValues(convertIputStringToInteger(min),
-                            convertIputStringToInteger(max));
-                }
-
-                //filter initialized list based on next params
-                for (int j = i; j<searchParams.size(); j++){
-                    temp = searchParams.get(j);
-
-                    if (temp!=null && !temp.isEmpty()) {
-                        switch (j){
-                            case 1 -> searchProperties = searchProperties.stream().
-                                    filter(p->p.getLocation().getNeighbourhood().getName().contains(neighbourhood))
-                                    .collect(Collectors.toList());
-                            case 2 -> searchProperties = searchProperties.stream().
-                                    filter(p->p.getAssessmentClasses().hasClass(aC))
-                                    .collect(Collectors.toList());
-                            case 3 -> searchProperties = searchProperties.stream().
-                                    filter(p->p.getValue() >= convertIputStringToInteger(min))
-                                    .collect(Collectors.toList());
-                            case 4 -> searchProperties = searchProperties.stream().
-                                    filter(p->p.getValue() <= convertIputStringToInteger(max))
-                                    .collect(Collectors.toList());
-                        }
-                    }
-                }
-                break; //list has been initialized and filtered so stop initial loop
-            }
-            //here if no search params present
-        }
-
-        loadSearchResults(searchProperties);
-    }
-
-    private List<PropertyAssessment> filterByList(List<PropertyAssessment> first, List<PropertyAssessment> second){
-        return first.stream()
-                .filter(second::contains)
-                .collect(Collectors.toList());
-    }
-
-
-    private void loadSearchResults(List<PropertyAssessment> searchResults){
-        properties = FXCollections.observableArrayList(searchResults);
+       try{ //do search
+        properties = FXCollections.observableArrayList(dao.multipleParamaters(params));
+       } catch (NumberFormatException e){
+           throwAlert("Number Format Error", """
+                        The following fields must consist only of digits 0-9:
+                        Account Number
+                        House Number
+                        Assessed Values""");
+           e.printStackTrace();
+           return;
+       }
 
         if (properties.stream().allMatch(PropertyAssessment::emptyProperty)){
             throwAlert("Search Results", "No properties found");
@@ -229,37 +197,12 @@ public class PropertyAssessmentDataController implements Initializable{
         }
     }
 
-    private List<PropertyAssessment> searchByAddress(){
-        Integer houseNumber = convertIputStringToInteger(houseNumberInput.getText());
-        
-        //this is how no value housenumbers are stored in PropertyAssessment objects TODO test 0 with streetName
-        if (houseNumber == null)
-            houseNumber = 0;
-        
-        try {
-            return dao.getByAddress(suiteInput.getText().toUpperCase(), houseNumber, streetInput.getText().toUpperCase());
-        } catch (NullPointerException e){
-            return List.of(new PropertyAssessment());
+    private void addTextFieldToParamMap(TextField textField, String key){
+        String text = textField.getText();
+        if (text == null || text.isEmpty()){
+            return;
         }
-    }
-
-    private Integer convertIputStringToInteger(String valueString){
-        Integer value = null;
-
-        if (valueString.isEmpty()){
-            return value;
-        } else {
-            try {
-                value = Integer.parseInt(valueString);
-            } catch (NumberFormatException e) {
-                throwAlert("Number Format Error", """
-                        The following fields must consist only of digits 0-9:
-                        Account Number
-                        House Number
-                        Assessed Values""");
-            }
-        }
-        return value;
+        params.put(key, textField.getText());
     }
 
     private void throwAlert(String title, String message){
