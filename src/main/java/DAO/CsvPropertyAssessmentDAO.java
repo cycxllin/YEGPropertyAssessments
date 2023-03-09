@@ -31,7 +31,7 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
         Address theAddress = new Address(suite, housenumber, streetName);
         if (suite.isEmpty() && housenumber == 0){
             return csvProperties.getAllProperties().stream()
-                    .filter(property -> property.getLocation().getAddress().getStreetName().equalsIgnoreCase(theAddress.getStreetName()))
+                    .filter(property -> property.getLocation().getAddress().getStreetName().contains(theAddress.getStreetName()))
                     .collect(Collectors.toList());
         } else if (suite.isEmpty()) { // and there is a houseNumber
             return csvProperties.getAllProperties().stream()
@@ -99,7 +99,7 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
     @Override
     public List<PropertyAssessment> getByNeighbourhood(String neighbourhood) {
         return csvProperties.getAllProperties().stream().
-                filter(property -> property.getLocation().getNeighbourhood().getName().equalsIgnoreCase(neighbourhood))
+                filter(property -> property.getLocation().getNeighbourhood().getName().contains(neighbourhood))
                 .collect(Collectors.toList());
     }
 

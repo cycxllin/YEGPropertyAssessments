@@ -15,7 +15,6 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class PropertyAssessmentDataController implements Initializable{
     //region FXMLvariables
@@ -62,7 +61,7 @@ public class PropertyAssessmentDataController implements Initializable{
     PropertyAssessmentDAO dao;
     ObservableList<PropertyAssessment> properties;
     ObservableList<String> assessmentClasses;
-    String filename = "Property_Assessment_Data_2022.csv";
+    String filename = "Property_Assessment_Data__Current_Calendar_Year_.csv";
 
 
     @Override
@@ -155,50 +154,61 @@ public class PropertyAssessmentDataController implements Initializable{
         //TODO cascade search results for advanced filtering
         List<PropertyAssessment> searchProperties = List.of(new PropertyAssessment());
 
-        List<PropertyAssessment> account,address,neighbourhood,assessmentClass,betweenValues;
-
-        List<List<PropertyAssessment>> allProps = new ArrayList<>();
-
-        //which fields am I considering?
-        //which field makes smallest list?
-        //on smallest list, apply other lists until done or smallest list is empty
-
+        //return property if account number is requested; only ever one property per account
         if (!accountNumberInput.getText().isEmpty()) {
-            account = List.of(dao.getByAccountNumber(convertIputStringToInteger(accountNumberInput.getText())));
-            allProps.add(account);
-        }
-        if(!streetInput.getText().isEmpty()){
-            address = searchByAddress();
-            allProps.add(address);
-        }
-        if (!neighbourhoodInput.getText().isEmpty()) {
-            neighbourhood = dao.getByNeighbourhood(neighbourhoodInput.getText().toUpperCase());
-            allProps.add(neighbourhood);
-        }
-        if (assessmentClassComboBox.getValue() != null){
-            assessmentClass = dao.getByAssessmentClass(assessmentClassComboBox.getSelectionModel().getSelectedItem());
-            allProps.add(assessmentClass);
-        }
-        if (!minValueInput.getText().isEmpty() || !maxValueInput.getText().isEmpty()) {
-            betweenValues = dao.getBetweenValues(convertIputStringToInteger(minValueInput.getText()),
-                    convertIputStringToInteger(maxValueInput.getText()));
-            allProps.add(betweenValues);
+            loadSearchResults(List.of(dao.getByAccountNumber(convertIputStringToInteger(accountNumberInput.getText()))));
+            return;
         }
 
-        //using for loop in order to terminate when list is empty
-        if (allProps.size() > 0) { //there are search terms
-            searchProperties = allProps.get(0);
+        String street = streetInput.getText();
+        String neighbourhood = neighbourhoodInput.getText().toUpperCase();
+        String aC = assessmentClassComboBox.getSelectionModel().getSelectedItem();
+        String min = minValueInput.getText();
+        String max = maxValueInput.getText();
 
-            if (allProps.size() > 1) {
-                for (int i = 1; i < allProps.size(); i++) {
-                    searchProperties = filterByList(searchProperties, allProps.get(i));
-                    if (searchProperties.isEmpty()) {
-                        break;
+        List<String> searchParams= new ArrayList<>(Arrays.asList(street, neighbourhood, aC, min, max));
+
+        System.out.println(searchParams);
+
+        //initialize searchProperties with the most restrictive search param
+        for (int i = 0; i<searchParams.size();i++){
+            String temp = searchParams.get(i);
+            if (temp!=null && !temp.isEmpty()){
+                switch (i) {
+                    case 0 -> searchProperties = searchByAddress();
+                    case 1 -> searchProperties = dao.getByNeighbourhood(neighbourhood);
+                    case 2 -> searchProperties = dao.getByAssessmentClass(aC);
+                    case 3, 4 -> searchProperties = dao.getBetweenValues(convertIputStringToInteger(min),
+                            convertIputStringToInteger(max));
+                }
+
+                //filter initialized list based on next params
+                for (int j = i; j<searchParams.size(); j++){
+                    temp = searchParams.get(j);
+
+                    if (temp!=null && !temp.isEmpty()) {
+                        switch (j){
+                            case 1 -> searchProperties = searchProperties.stream().
+                                    filter(p->p.getLocation().getNeighbourhood().getName().contains(neighbourhood))
+                                    .collect(Collectors.toList());
+                            case 2 -> searchProperties = searchProperties.stream().
+                                    filter(p->p.getAssessmentClasses().hasClass(aC))
+                                    .collect(Collectors.toList());
+                            case 3 -> searchProperties = searchProperties.stream().
+                                    filter(p->p.getValue() >= convertIputStringToInteger(min))
+                                    .collect(Collectors.toList());
+                            case 4 -> searchProperties = searchProperties.stream().
+                                    filter(p->p.getValue() <= convertIputStringToInteger(max))
+                                    .collect(Collectors.toList());
+                        }
                     }
                 }
+                break; //list has been initialized and filtered so stop initial loop
             }
-            loadSearchResults(searchProperties);
+            //here if no search params present
         }
+
+        loadSearchResults(searchProperties);
     }
 
     private List<PropertyAssessment> filterByList(List<PropertyAssessment> first, List<PropertyAssessment> second){
@@ -269,6 +279,5 @@ public class PropertyAssessmentDataController implements Initializable{
         maxValueInput.clear();
 
         assessmentClassComboBox.setValue(null);
-        loadSourceData(dataSourceComboBox.getSelectionModel().getSelectedIndex());
     }
 }

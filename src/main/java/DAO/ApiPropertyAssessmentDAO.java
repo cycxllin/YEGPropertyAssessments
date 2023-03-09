@@ -3,15 +3,12 @@ package main.java.DAO;
 import main.java.classes.CSVUtil;
 import main.java.classes.PropertyAssessment;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.net.http.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
@@ -75,21 +72,47 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
     @Override
     public List<PropertyAssessment> getAllProperties() {
-        String url = endpoint + "?$limit=100";
+        String url = endpoint + "?$limit=100&$order=account_number";
         return getProperties(url);
     }
 
     @Override
     public List<PropertyAssessment> getByAddress(String suite, int housenumber, String streetName) {
-        //TODO make method
-        //TODO test method
-        return null;
+        String url;
+        streetName = URLEncoder.encode(streetName, StandardCharsets.UTF_8);
+        suite = URLEncoder.encode(suite, StandardCharsets.UTF_8);
+
+        if (suite.isEmpty() && housenumber == 0){
+            url = endpoint + "?street_name=" + streetName;
+        } else if (suite.isEmpty()) { // and there is a houseNumber
+            url = endpoint + "?$where=street_name='" + streetName
+                    + URLEncoder.encode("' AND house_number='", StandardCharsets.UTF_8) + housenumber + "'";
+        } else{
+            url = endpoint + "?$where=street_name='" + streetName
+                    + URLEncoder.encode("' AND house_number='", StandardCharsets.UTF_8) + housenumber
+                    + URLEncoder.encode("' AND suite='", StandardCharsets.UTF_8) + suite + "'";
+        }
+        return getProperties(url);
     }
 
     @Override
     public List<PropertyAssessment> getBetweenValues(Integer min, Integer max) {
-        //TODO make method
-        //TODO test method
-        return null;
+        String url;
+
+        if (min == null && max == null) //no search params
+            return new ArrayList<>();
+
+        else if (min == null) { //max != null
+            url = endpoint + "?$where=assessed_value" + URLEncoder.encode("<=", StandardCharsets.UTF_8) + max;
+
+        } else if (max == null) { //min != null
+            url = endpoint + "?$where=assessed_value" + URLEncoder.encode(">=", StandardCharsets.UTF_8) + min;
+        } else {
+            //here when both min & max != null
+            url = endpoint + "?$where=assessed_value>='" + min
+                    + URLEncoder.encode("' AND assessed_value<='", StandardCharsets.UTF_8) + max  + "'";
+        }
+        System.out.println(url);
+        return getProperties(url);
     }
 }
