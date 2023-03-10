@@ -42,7 +42,8 @@ public class PropertyAssessmentDataController implements Initializable{
     private Button searchButton;
     @FXML
     private Button resetButton;
-
+    @FXML
+    private Button loadMoreApiDataButton;
     @FXML
     private TextField accountNumberInput;
     @FXML
@@ -62,15 +63,11 @@ public class PropertyAssessmentDataController implements Initializable{
     ObservableList<PropertyAssessment> properties;
     ObservableList<String> assessmentClasses;
     Map<String, String> params;
-    String account = "accountNumber";
-    String suite = "suite";
-    String house = "houseNumber";
-    String street = "streetName";
-    String neighbourhood = "neighbourhood";
-    String aC = "assessmentClass";
-    String min = "minValue";
-    String max = "maxValue";
-    String filename = "Property_Assessment_Data__Current_Calendar_Year_.csv";
+    int offset; //used for paging when APIDao is used
+    int lastLoadFlag; //used for paging when APIDao is used
+
+    //filename here so it is easy to find and change
+    private final String filename = "Property_Assessment_Data__Current_Calendar_Year_.csv";
 
 
     @Override
@@ -90,6 +87,9 @@ public class PropertyAssessmentDataController implements Initializable{
         //Reset search fields
         resetButton.setOnAction(event -> resetSearchFilters());
 
+        //load more data
+        loadMoreApiDataButton.setOnAction(event -> loadMoreData());
+
         //for number currency format
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
         currencyFormat.setMaximumFractionDigits(0);
@@ -108,14 +108,36 @@ public class PropertyAssessmentDataController implements Initializable{
     }
 
     /**
+     * Only accessed when dao class is APIDao therefore load more button is visible
+     */
+    private void loadMoreData(){
+        offset += 1;
+        dao = new ApiPropertyAssessmentDAO(offset);
+
+        List<PropertyAssessment> moreProperties = dao.multipleParamaters(params);
+
+        if (!moreProperties.isEmpty()){
+            properties.addAll(FXCollections.observableArrayList(moreProperties));
+            loadDataTable();
+
+            checkLoad(moreProperties);
+            }
+        }
+
+    /**
      * Given 0 or 1, creates DAO and loads info appropriately
      * @param dataSource Integer
      */
     private void loadSourceData(Integer dataSource){
+        offset = 0;
+
         if (dataSource == 0) { //dataSource is CSV
+
             dao = new CsvPropertyAssessmentDAO(filename);
+            loadMoreApiDataButton.setVisible(false);
         } else if (dataSource == 1) { //datasource is API
             dao = new ApiPropertyAssessmentDAO();
+            loadMoreApiDataButton.setVisible(true);
         }
         properties = FXCollections.observableArrayList(dao.getAllProperties());
 
@@ -164,36 +186,56 @@ public class PropertyAssessmentDataController implements Initializable{
         //build earch param map
         params = new HashMap<>();
 
-        addTextFieldToParamMap(accountNumberInput, account);
-        addTextFieldToParamMap(suiteInput, suite);
-        addTextFieldToParamMap(houseNumberInput, house);
-        addTextFieldToParamMap(streetInput, street);
-        addTextFieldToParamMap(neighbourhoodInput, neighbourhood);
-        addTextFieldToParamMap(minValueInput, min);
-        addTextFieldToParamMap(maxValueInput, max);
+        //reset offset & flag when search requested
+        offset = 0;
+        lastLoadFlag = 0;
+
+        if (dao.getClass() == ApiPropertyAssessmentDAO.class){
+            dao = new ApiPropertyAssessmentDAO(offset);
+        }
+
+        addTextFieldToParamMap(accountNumberInput, "accountNumber");
+        addTextFieldToParamMap(suiteInput, "suite");
+        addTextFieldToParamMap(houseNumberInput, "houseNumber");
+        addTextFieldToParamMap(streetInput, "streetName");
+        addTextFieldToParamMap(neighbourhoodInput, "neighbourhood");
+        addTextFieldToParamMap(minValueInput, "minValue");
+        addTextFieldToParamMap(maxValueInput, "maxValue");
 
        if (assessmentClassComboBox.getValue() != null) {
+           String aC = "assessmentClass";
            params.put(aC, assessmentClassComboBox.getValue());
        }
+
         System.out.println(params);
 
-       try{ //do search
-        properties = FXCollections.observableArrayList(dao.multipleParamaters(params));
-       } catch (NumberFormatException e){
-           throwAlert("Number Format Error", """
+       //do search
+        try{
+            properties = FXCollections.observableArrayList(dao.multipleParamaters(params));
+        } catch (NumberFormatException e){
+            throwAlert("Number Format Error", """
                         The following fields must consist only of digits 0-9:
                         Account Number
                         House Number
                         Assessed Values""");
-           e.printStackTrace();
-           return;
-       }
+            e.printStackTrace();
+            return;
+        }
 
+       //check if any properties returned
         if (properties.stream().allMatch(PropertyAssessment::emptyProperty)){
             throwAlert("Search Results", "No properties found");
         }
         else {
+            checkLoad(properties);
             loadDataTable();
+        }
+    }
+
+    private void checkLoad(List<PropertyAssessment> propertyAssessmentList){
+        if (propertyAssessmentList.size() < 500){
+            lastLoadFlag = 1;
+            loadMoreApiDataButton.setDisable(true);
         }
     }
 

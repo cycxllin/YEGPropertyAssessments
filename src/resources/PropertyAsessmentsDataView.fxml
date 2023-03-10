@@ -250,6 +250,16 @@
                   </BorderPane.margin>
                </Label>
             </top>
+            <bottom>
+               <Button fx:id="loadMoreApiDataButton" alignment="CENTER" mnemonicParsing="false" text="Load More" visible="false" BorderPane.alignment="CENTER">
+                  <BorderPane.margin>
+                     <Insets bottom="10.0" />
+                  </BorderPane.margin>
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Button>
+            </bottom>
          </BorderPane>
       </AnchorPane>
    </SplitPane>
