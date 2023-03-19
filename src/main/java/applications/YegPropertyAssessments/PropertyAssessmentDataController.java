@@ -129,14 +129,13 @@ public class PropertyAssessmentDataController implements Initializable{
      * @param dataSource Integer
      */
     private void loadSourceData(Integer dataSource){
-        offset = 0;
-
         if (dataSource == 0) { //dataSource is CSV
-
             dao = new CsvPropertyAssessmentDAO(filename);
             loadMoreApiDataButton.setVisible(false);
         } else if (dataSource == 1) { //datasource is API
-            dao = new ApiPropertyAssessmentDAO();
+            offset = 0;
+            lastLoadFlag = 0;
+            dao = new ApiPropertyAssessmentDAO(offset);
             loadMoreApiDataButton.setVisible(true);
         }
         properties = FXCollections.observableArrayList(dao.getAllProperties());
@@ -186,11 +185,11 @@ public class PropertyAssessmentDataController implements Initializable{
         //build earch param map
         params = new HashMap<>();
 
-        //reset offset & flag when search requested
-        offset = 0;
-        lastLoadFlag = 0;
 
+        //reset offset & flag when search requested
         if (dao.getClass() == ApiPropertyAssessmentDAO.class){
+            offset = 0;
+            lastLoadFlag = 0;
             dao = new ApiPropertyAssessmentDAO(offset);
         }
 

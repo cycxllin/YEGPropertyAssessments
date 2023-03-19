@@ -31,8 +31,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
     }
 
     public String makeGenericUrl(String searchParamUrl) {
-        String finalUrl =  endpoint + "?$where=" + searchParamUrl + paging;
-        return finalUrl;
+        return endpoint + "?$where=" + searchParamUrl + paging;
     }
 
     private List<PropertyAssessment> getProperties(String url) {
@@ -105,7 +104,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
     }
 
     public String makeNeighbourhoodUrl(String neighbourhood) {
-        return "neighbourhood='" + URLEncoder.encode(neighbourhood.toUpperCase(), StandardCharsets.UTF_8) + "'";
+        return "neighbourhood" + URLEncoder.encode(" like '%" + neighbourhood.toUpperCase() + "%", StandardCharsets.UTF_8) + "'";
     }
 
     //----//
