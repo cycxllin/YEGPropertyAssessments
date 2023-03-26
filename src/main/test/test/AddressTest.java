@@ -1,3 +1,5 @@
+package test;
+
 import main.java.classes.Address;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

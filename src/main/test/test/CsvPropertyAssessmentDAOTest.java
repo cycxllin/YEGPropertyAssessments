@@ -1,3 +1,5 @@
+package test;
+
 import main.java.DAO.*;
 import main.java.classes.*;
 import org.junit.jupiter.api.*;
@@ -12,8 +14,8 @@ class CsvPropertyAssessmentDAOTest {
 
     @BeforeEach
     void setUp() {
-        csvDAO = new CsvPropertyAssessmentDAO(new PropertyAssessments(
-                CSVUtil.importData("TestGetProperties.csv")));
+        //csvDAO = new CsvPropertyAssessmentDAO(new PropertyAssessments(
+                //PropertiesCSVUtil.importData("TestGetProperties.csv")));
     }
 
     @Test

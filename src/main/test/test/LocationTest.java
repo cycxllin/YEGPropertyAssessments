@@ -1,3 +1,5 @@
+package test;
+
 import main.java.classes.Address;
 import main.java.classes.Location;
 import main.java.classes.Neighbourhood;
@@ -14,7 +16,7 @@ class LocationTest {
     @BeforeEach
     void setUp() {
         loc = new Location (52.9098, -113.2, new Address(2, "Weather Cres"),
-                new Neighbourhood(1, "Garner", "Ward"));
+                new Neighbourhood("Garner", "Ward"));
         locNoNeigh = new Location(90.2, -78.2736, new Address("1",13,"Beverly Cres"));
         locNoAdd = new Location(23.19029, -123.09887);
     }
@@ -44,9 +46,9 @@ class LocationTest {
 
     @Test
     void setNeighbourhood(){
-        Neighbourhood neigh = new Neighbourhood(3, "Name", "Ward");
+        Neighbourhood neigh = new Neighbourhood("Name", "Ward");
         Location expected = new Location (52.9098, -113.2, new Address(2, "Weather Cres"),
-                new Neighbourhood(3, "Name", "Ward"));
+                new Neighbourhood("Name", "Ward"));
         loc.setNeighbourhood(neigh);
 
         assertEquals(expected, loc);

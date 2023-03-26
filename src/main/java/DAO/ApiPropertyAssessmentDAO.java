@@ -1,6 +1,6 @@
 package main.java.DAO;
 
-import main.java.classes.CSVUtil;
+import main.java.csvUtil.PropertiesCSVUtil;
 import main.java.classes.PropertyAssessment;
 
 import java.io.*;
@@ -44,8 +44,9 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             BufferedReader reader = new BufferedReader(new StringReader(response.body()));
+            PropertiesCSVUtil csvUtil = new PropertiesCSVUtil();
 
-            properties = CSVUtil.parseCSVString(reader);
+            properties = csvUtil.loadPropertyData(reader);
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

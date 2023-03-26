@@ -1,3 +1,5 @@
+package test;
+
 import main.java.classes.AssessmentClasses;
 import main.java.classes.Location;
 import main.java.classes.PropertyAssessment;
