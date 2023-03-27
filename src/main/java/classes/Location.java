@@ -5,6 +5,9 @@ import java.util.Objects;
 public class Location{
     private double lat;
     private double lon;
+
+    //TODO add point?
+
     private Address address;
     private Neighbourhood neighbourhood;
 
@@ -29,7 +32,7 @@ public class Location{
         }
 
         if (neighbourhood != null) {
-            this.neighbourhood = new Neighbourhood(neighbourhood.getId(), neighbourhood.getName(), neighbourhood.getWard());
+            this.neighbourhood = new Neighbourhood(neighbourhood.getName(), neighbourhood.getWard());
         }
     }
 
@@ -43,7 +46,7 @@ public class Location{
         this.address = new Address(address.getSuite(), address.getHouseNumber(), address.getStreetName());
     }
     public void setNeighbourhood(Neighbourhood neighbourhood){
-        this.neighbourhood = new Neighbourhood(neighbourhood.getId(), neighbourhood.getName(), neighbourhood.getWard());
+        this.neighbourhood = new Neighbourhood(neighbourhood.getName(), neighbourhood.getWard());
     }
 
     public double getLat() {
@@ -56,7 +59,7 @@ public class Location{
 
     public Neighbourhood getNeighbourhood(){
         if (neighbourhood!=null) {
-            return new Neighbourhood(neighbourhood.getId(), neighbourhood.getName(), neighbourhood.getWard());
+            return new Neighbourhood(neighbourhood.getName(), neighbourhood.getWard());
         }
         return new Neighbourhood();
     }

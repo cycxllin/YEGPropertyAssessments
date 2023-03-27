@@ -1,12 +1,8 @@
 package main.java.DAO;
 
 import main.java.classes.*;
+import main.java.csvUtil.PropertiesCSVUtil;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,7 +20,8 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
     }
 
     public CsvPropertyAssessmentDAO(String fileName){
-        this.csvProperties = new PropertyAssessments(importCSVData(fileName));
+        PropertiesCSVUtil csvUtil = new PropertiesCSVUtil();
+        this.csvProperties = new PropertyAssessments(csvUtil.loadPropertyData(fileName));
     }
 
     public List<PropertyAssessment> getAllProperties() {
@@ -106,30 +103,6 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
             }
         }
         return propertiesList;
-    }
-
-    public static List<PropertyAssessment> importCSVData(String fileName) {
-        ArrayList<PropertyAssessment> properties = new ArrayList<>();
-        String line;
-
-        Path path = Paths.get(fileName);
-
-        // Create a stream to read the CSV file
-        try (BufferedReader reader = Files.newBufferedReader(path)) {
-            // Skip the header
-            reader.readLine();
-
-            //read each line into an array of strings, load info into property and add to list
-            while((line = reader.readLine()) != null){
-                String[] info = line.split(",");
-                PropertyAssessment p = CSVUtil.loadInfoIntoProperty(info);
-                properties.add(p);
-            }
-        }
-        catch (IOException e){
-            System.out.println("Error: can't open file " + fileName);
-        }
-        return properties;
     }
 
     @Override
