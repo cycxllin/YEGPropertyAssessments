@@ -27,5 +27,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="JavaFX" level="project" />
+    <orderEntry type="library" name="GMAPSFX" level="project" />
   </component>
 </module>
