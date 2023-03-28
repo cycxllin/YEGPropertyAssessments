@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="GMAPSFX">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/src/resources/GMAPSFX" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/src/resources/GMAPSFX" recursive="false" />
+  </library>
+</component>
