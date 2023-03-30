@@ -141,7 +141,7 @@ public class PropertyAssessmentDataController implements Initializable{
         properties = FXCollections.observableArrayList(dao.getAllProperties());
 
         loadDataTable();
-        enableSearchresetButtons();
+        enableSearchResetButtons();
         setAssessmentClasses();
     }
 
@@ -158,7 +158,7 @@ public class PropertyAssessmentDataController implements Initializable{
         assessmentClassComboBox.setItems(assessmentClasses);
     }
 
-    private void enableSearchresetButtons(){
+    private void enableSearchResetButtons(){
         searchButton.setDisable(false);
         resetButton.setDisable(false);
     }
@@ -185,7 +185,6 @@ public class PropertyAssessmentDataController implements Initializable{
         //build earch param map
         params = new HashMap<>();
 
-
         //reset offset & flag when search requested
         if (dao.getClass() == ApiPropertyAssessmentDAO.class){
             offset = 0;
@@ -205,8 +204,6 @@ public class PropertyAssessmentDataController implements Initializable{
            String aC = "assessmentClass";
            params.put(aC, assessmentClassComboBox.getValue());
        }
-
-        System.out.println(params);
 
        //do search
         try{

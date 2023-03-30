@@ -123,6 +123,7 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
                 filter(property -> property.getAssessmentClasses().hasClass(assessmentClass.toUpperCase()))
                 .collect(Collectors.toList());
     }
+
     @Override
     public List<PropertyAssessment> getByAddress(String suite, int housenumber, String streetName) {
 
