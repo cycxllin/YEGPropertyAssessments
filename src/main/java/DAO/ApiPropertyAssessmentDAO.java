@@ -114,7 +114,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
     }
 
     public String makeWardUrl(String ward) {
-        return "ward" + URLEncoder.encode(" like '%" + ward.toUpperCase() + "%", StandardCharsets.UTF_8) + "'";
+        return "ward" + URLEncoder.encode(" like '%" + ward + "%", StandardCharsets.UTF_8) + "'";
     }
 
     //----//
@@ -219,7 +219,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
         }
 
         if (params.containsKey(ward)) {
-            urls.add(makeNeighbourhoodUrl(params.get(ward).toUpperCase()));
+            urls.add(makeWardUrl(params.get(ward)));
         }
 
         if (params.containsKey(aC)) {
@@ -251,7 +251,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
             }
 
         String URL = makeGenericUrl(String.valueOf(searchURL));
-
+        System.out.println(URL);
         return getProperties(URL);
     }
 }

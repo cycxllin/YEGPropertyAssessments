@@ -152,14 +152,11 @@
                   <Insets left="10.0" right="10.0" />
                </VBox.margin>
             </Label>
-            <TextField fx:id="wardInput">
-               <font>
-                  <Font size="18.0" />
-               </font>
+            <ComboBox fx:id="wardsComboBox" prefHeight="26.0" prefWidth="586.0">
                <VBox.margin>
                   <Insets left="10.0" right="10.0" />
                </VBox.margin>
-            </TextField>
+            </ComboBox>
             <Label prefHeight="26.0" prefWidth="695.0" text="Assessment Class:">
                <font>
                   <Font size="18.0" />

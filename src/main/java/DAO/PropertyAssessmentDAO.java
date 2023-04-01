@@ -15,7 +15,8 @@ public interface PropertyAssessmentDAO {
     List<PropertyAssessment> getAllProperties();
 
     /**
-     * Appropriate keys are: accountNumber, suite, houseNumber, streetName, neighbourhood, assessmentClass, minValue, maxValue
+     * Appropriate keys are: accountNumber, suite, houseNumber, streetName, neighbourhood, assessmentClass, minValue,
+     *                      maxValue, ward
      */
     List<PropertyAssessment> multipleParamaters(Map<String, String> params);
 

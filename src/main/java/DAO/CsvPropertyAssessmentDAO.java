@@ -59,7 +59,7 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
         if (params.containsKey(ward)){
             propertiesList = propertiesList.stream().
-                    filter(p->p.getLocation().getNeighbourhood().getWard().toUpperCase().contains(params.get(neighbourhood).toUpperCase()))
+                    filter(p->p.getLocation().getNeighbourhood().getWard().toUpperCase().contains(params.get(ward).toUpperCase()))
                     .collect(Collectors.toList());
         }
 

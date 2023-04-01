@@ -29,7 +29,7 @@ public class PropertyAssessmentDataController implements Initializable{
     @FXML
     private TableColumn<PropertyAssessment, AssessmentClasses> assessmentClassesTableColumn;
     @FXML
-    private TableColumn<PropertyAssessment, Neighbourhood> neighbourhoodTableColumn;
+    private TableColumn<PropertyAssessment, String> neighbourhoodTableColumn;
     @FXML
     private TableColumn<PropertyAssessment, String> wardTableColumn;
     @FXML
@@ -38,6 +38,8 @@ public class PropertyAssessmentDataController implements Initializable{
     private ComboBox<String> dataSourceComboBox;
     @FXML
     private ComboBox<String> assessmentClassComboBox;
+    @FXML
+    private ComboBox<String> wardsComboBox;
     @FXML
     private Button readDataSourceButton;
     @FXML
@@ -66,6 +68,7 @@ public class PropertyAssessmentDataController implements Initializable{
     PropertyAssessmentDAO dao;
     ObservableList<PropertyAssessment> properties;
     ObservableList<String> assessmentClasses;
+    ObservableList<String> wards;
     Map<String, String> params;
     int offset; //used for paging when APIDao is used
     int lastLoadFlag; //used for paging when APIDao is used
@@ -147,6 +150,7 @@ public class PropertyAssessmentDataController implements Initializable{
         loadDataTable();
         enableSearchResetButtons();
         setAssessmentClasses();
+        setWards();
     }
 
     /**
@@ -160,6 +164,20 @@ public class PropertyAssessmentDataController implements Initializable{
                 .collect(Collectors.toSet());
         assessmentClasses = FXCollections.observableArrayList(assessmentClassNames);
         assessmentClassComboBox.setItems(assessmentClasses);
+    }
+
+    /**
+     * creates set of wards based on dao.allProperties and sets respective combobox to list
+     */
+    private void setWards() {
+        Set<String> wardNames = dao.getAllProperties().stream()
+                .map(PropertyAssessment::getLocation)
+                .map(Location::getNeighbourhood)
+                .map(Neighbourhood::getWard)
+                .filter(ward -> !ward.isEmpty())
+                .collect(Collectors.toSet());
+        wards = FXCollections.observableArrayList(wardNames);
+        wardsComboBox.setItems(wards);
     }
 
     private void enableSearchResetButtons(){
@@ -180,7 +198,7 @@ public class PropertyAssessmentDataController implements Initializable{
         assessmentClassesTableColumn.setCellValueFactory(property ->
                 new SimpleObjectProperty<>(property.getValue().getAssessmentClasses()));
         neighbourhoodTableColumn.setCellValueFactory(property ->
-                new SimpleObjectProperty<>(property.getValue().getLocation().getNeighbourhood()));
+                new SimpleObjectProperty<>(property.getValue().getLocation().getNeighbourhood().getName()));
         wardTableColumn.setCellValueFactory(property ->
                 new SimpleObjectProperty<>(property.getValue().getLocation().getNeighbourhood().getWard()));
         locationTableColumn.setCellValueFactory(property ->
@@ -203,14 +221,20 @@ public class PropertyAssessmentDataController implements Initializable{
         addTextFieldToParamMap(houseNumberInput, "houseNumber");
         addTextFieldToParamMap(streetInput, "streetName");
         addTextFieldToParamMap(neighbourhoodInput, "neighbourhood");
-        addTextFieldToParamMap(wardInput, "ward");
         addTextFieldToParamMap(minValueInput, "minValue");
         addTextFieldToParamMap(maxValueInput, "maxValue");
+
+        System.out.println(params.get("ward"));
 
        if (assessmentClassComboBox.getValue() != null) {
            String aC = "assessmentClass";
            params.put(aC, assessmentClassComboBox.getValue());
        }
+
+        if (wardsComboBox.getValue() != null) {
+            String ward = "ward";
+            params.put(ward, wardsComboBox.getValue());
+        }
 
        //do search
         try{
@@ -268,5 +292,6 @@ public class PropertyAssessmentDataController implements Initializable{
         maxValueInput.clear();
 
         assessmentClassComboBox.setValue(null);
+        wardsComboBox.setValue(null);
     }
 }
