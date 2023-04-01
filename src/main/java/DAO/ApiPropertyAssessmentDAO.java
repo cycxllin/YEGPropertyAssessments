@@ -251,7 +251,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
             }
 
         String URL = makeGenericUrl(String.valueOf(searchURL));
-        System.out.println(URL);
+
         return getProperties(URL);
     }
 }

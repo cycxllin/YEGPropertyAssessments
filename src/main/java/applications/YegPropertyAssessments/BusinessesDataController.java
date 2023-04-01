@@ -8,11 +8,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import main.java.DAO.BusinessDAO;
 import main.java.classes.*;
 
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BusinessesDataController implements Initializable {
     //region FXMLvariables
@@ -31,6 +33,8 @@ public class BusinessesDataController implements Initializable {
     @FXML
     private TableColumn<Business, String> categoriesTableColumn;
     @FXML
+    private ComboBox<String> wardsComboBox;
+    @FXML
     private ComboBox<String> businessTypeComboBox;
     @FXML
     private Button loadBusinessesButton;
@@ -47,8 +51,13 @@ public class BusinessesDataController implements Initializable {
     @FXML
     private TextField neighbourhoodInput;
     @FXML
-    private TextField wardInput;
-
+    private TextField radius;
+    @FXML
+    private Label propertyInfo;
+    @FXML
+    private AnchorPane propertyPane;
+    @FXML
+    private CheckBox includePropertyBox;
     @FXML
     private TextField nameInput;
 
@@ -59,6 +68,7 @@ public class BusinessesDataController implements Initializable {
     BusinessDAO dao;
 
     Map<String, String> params;
+    ObservableList<String> wards;
 
     ObservableList<String> businessTypes = FXCollections.observableArrayList(Arrays.asList("Bars", "Cannabis Stores",
             "Liquor Stores", "Restaurants"));
@@ -67,6 +77,12 @@ public class BusinessesDataController implements Initializable {
 
     //filename here so it is easy to find and change
     private final String filename = "businesses_trimmed.csv";
+
+    // temp property to search within radius
+    PropertyAssessment property = new PropertyAssessment(1124304, 380000, "Y", new Location(53.517970704620545,
+            -113.58016177749678, new Address(15006, "85 AVENUE NW"), new Neighbourhood(
+                    "LYNNWOOD", "sipiwiyiniwak Ward")), new AssessmentClasses(100, "RESIDENTIAL"));
+    //1124304,,15006,85 AVENUE NW,Y,4280,LYNNWOOD,sipiwiyiniwak Ward,380000,53.517970704620545,-113.58016177749678,POINT (-113.58016177749678 53.517970704620545),100,,,RESIDENTIAL,,
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -79,6 +95,14 @@ public class BusinessesDataController implements Initializable {
         searchButton.setOnAction(event -> search());
         resetButton.setOnAction(event -> resetSearchFilters());
 
+        includePropertyBox.setOnAction(event -> setPropertyPane());
+
+    }
+
+    private void setPropertyPane(){
+        propertyPane.setVisible(includePropertyBox.isSelected());
+        propertyInfo.setText("Account: " + property.getAccount() + "\n" + property.getLocation().getAddress() + "\n"
+                + property.getLocation().getNeighbourhood());
     }
 
     private void loadBusinesses(Integer businessType) {
@@ -98,6 +122,21 @@ public class BusinessesDataController implements Initializable {
 
         loadDataTable();
         enableSearchResetButtons();
+        setWards();
+    }
+
+    /**
+     * creates set of wards based on dao.allBusinesses and sets respective combobox to list
+     */
+    private void setWards() {
+        Set<String> wardNames = dao.getAllBusinesses().stream()
+                .map(Business::getLocation)
+                .map(Location::getNeighbourhood)
+                .map(Neighbourhood::getWard)
+                .filter(ward -> !ward.isEmpty())
+                .collect(Collectors.toSet());
+        wards = FXCollections.observableArrayList(wardNames);
+        wardsComboBox.setItems(wards);
     }
 
     private void enableSearchResetButtons() {
@@ -132,7 +171,8 @@ public class BusinessesDataController implements Initializable {
         addTextFieldToParamMap(houseNumberInput, "houseNumber");
         addTextFieldToParamMap(streetInput, "streetName");
         addTextFieldToParamMap(neighbourhoodInput, "neighbourhood");
-        addTextFieldToParamMap(wardInput, "ward");
+
+        params.put("ward", wardsComboBox.getSelectionModel().getSelectedItem());
         params.put("businessType", businessTypeComboBox.getSelectionModel().getSelectedItem());
 
         //do search
@@ -177,6 +217,6 @@ public class BusinessesDataController implements Initializable {
         houseNumberInput.clear();
         streetInput.clear();
         neighbourhoodInput.clear();
-        wardInput.clear();
+        wardsComboBox.setValue(null);
     }
 }

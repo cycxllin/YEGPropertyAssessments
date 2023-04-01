@@ -59,8 +59,6 @@ public class PropertyAssessmentDataController implements Initializable{
     @FXML
     private TextField neighbourhoodInput;
     @FXML
-    private TextField wardInput;
-    @FXML
     private TextField minValueInput;
     @FXML
     private TextField maxValueInput;
@@ -224,8 +222,6 @@ public class PropertyAssessmentDataController implements Initializable{
         addTextFieldToParamMap(minValueInput, "minValue");
         addTextFieldToParamMap(maxValueInput, "maxValue");
 
-        System.out.println(params.get("ward"));
-
        if (assessmentClassComboBox.getValue() != null) {
            String aC = "assessmentClass";
            params.put(aC, assessmentClassComboBox.getValue());
@@ -287,7 +283,6 @@ public class PropertyAssessmentDataController implements Initializable{
         houseNumberInput.clear();
         streetInput.clear();
         neighbourhoodInput.clear();
-        wardInput.clear();
         minValueInput.clear();
         maxValueInput.clear();
 
