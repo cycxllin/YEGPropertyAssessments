@@ -51,7 +51,7 @@ public class BusinessesDataController implements Initializable {
     @FXML
     private TextField neighbourhoodInput;
     @FXML
-    private TextField radius;
+    private TextField radiusInput;
     @FXML
     private Label propertyInfo;
     @FXML
