@@ -31,6 +31,8 @@ public class PropertyAssessmentDataController implements Initializable{
     @FXML
     private TableColumn<PropertyAssessment, Neighbourhood> neighbourhoodTableColumn;
     @FXML
+    private TableColumn<PropertyAssessment, String> wardTableColumn;
+    @FXML
     private TableColumn<PropertyAssessment, String> locationTableColumn;
     @FXML
     private ComboBox<String> dataSourceComboBox;
@@ -54,6 +56,8 @@ public class PropertyAssessmentDataController implements Initializable{
     private TextField streetInput;
     @FXML
     private TextField neighbourhoodInput;
+    @FXML
+    private TextField wardInput;
     @FXML
     private TextField minValueInput;
     @FXML
@@ -177,6 +181,8 @@ public class PropertyAssessmentDataController implements Initializable{
                 new SimpleObjectProperty<>(property.getValue().getAssessmentClasses()));
         neighbourhoodTableColumn.setCellValueFactory(property ->
                 new SimpleObjectProperty<>(property.getValue().getLocation().getNeighbourhood()));
+        wardTableColumn.setCellValueFactory(property ->
+                new SimpleObjectProperty<>(property.getValue().getLocation().getNeighbourhood().getWard()));
         locationTableColumn.setCellValueFactory(property ->
                 new SimpleStringProperty(property.getValue().getLocation().getLatLon()));
     }
@@ -197,6 +203,7 @@ public class PropertyAssessmentDataController implements Initializable{
         addTextFieldToParamMap(houseNumberInput, "houseNumber");
         addTextFieldToParamMap(streetInput, "streetName");
         addTextFieldToParamMap(neighbourhoodInput, "neighbourhood");
+        addTextFieldToParamMap(wardInput, "ward");
         addTextFieldToParamMap(minValueInput, "minValue");
         addTextFieldToParamMap(maxValueInput, "maxValue");
 
@@ -256,6 +263,7 @@ public class PropertyAssessmentDataController implements Initializable{
         houseNumberInput.clear();
         streetInput.clear();
         neighbourhoodInput.clear();
+        wardInput.clear();
         minValueInput.clear();
         maxValueInput.clear();
 

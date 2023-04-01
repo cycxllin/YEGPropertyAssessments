@@ -108,6 +108,15 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
         return "neighbourhood" + URLEncoder.encode(" like '%" + neighbourhood.toUpperCase() + "%", StandardCharsets.UTF_8) + "'";
     }
 
+    @Override
+    public List<PropertyAssessment> getByWard(String ward) {
+        return getProperties(makeGenericUrl(makeWardUrl(ward)));
+    }
+
+    public String makeWardUrl(String ward) {
+        return "ward" + URLEncoder.encode(" like '%" + ward.toUpperCase() + "%", StandardCharsets.UTF_8) + "'";
+    }
+
     //----//
     @Override
     public List<PropertyAssessment> getByAssessmentClass(String assessmentClass) {
@@ -191,6 +200,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
         String suite = "suite";
         String street = "streetName";
         String neighbourhood = "neighbourhood";
+        String ward = "ward";
         String aC = "assessmentClass";
         String min = "minValue";
         String max = "maxValue";
@@ -206,6 +216,10 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
         if (params.containsKey(neighbourhood)) {
             urls.add(makeNeighbourhoodUrl(params.get(neighbourhood).toUpperCase()));
+        }
+
+        if (params.containsKey(ward)) {
+            urls.add(makeNeighbourhoodUrl(params.get(ward).toUpperCase()));
         }
 
         if (params.containsKey(aC)) {

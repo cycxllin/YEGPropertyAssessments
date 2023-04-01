@@ -11,6 +11,7 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
     private final PropertyAssessments csvProperties;
     private final String neighbourhood = "neighbourhood";
     private final String aC = "assessmentClass";
+    private final String ward = "ward";
     private final String min = "minValue";
     private final String max = "maxValue";
 
@@ -56,6 +57,12 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
                     .collect(Collectors.toList());
         }
 
+        if (params.containsKey(ward)){
+            propertiesList = propertiesList.stream().
+                    filter(p->p.getLocation().getNeighbourhood().getWard().toUpperCase().contains(params.get(neighbourhood).toUpperCase()))
+                    .collect(Collectors.toList());
+        }
+
         if (params.containsKey(aC)){
             propertiesList = propertiesList.stream().
                     filter(p->p.getAssessmentClasses().hasClass(params.get(aC)))
@@ -91,6 +98,8 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
             }
         } else if (params.containsKey(neighbourhood)) {
             propertiesList = getByNeighbourhood(params.get(neighbourhood));
+        } else if (params.containsKey(ward)) {
+            propertiesList = getByWard(params.get(ward));
         } else if (params.containsKey(aC)) {
             propertiesList = getByAssessmentClass(params.get(aC));
         } else if (params.containsKey(min) || params.containsKey(max)) {
@@ -114,6 +123,13 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO{
     public List<PropertyAssessment> getByNeighbourhood(String neighbourhood) {
         return csvProperties.getAllProperties().stream().
                 filter(property -> property.getLocation().getNeighbourhood().getName().contains(neighbourhood.toUpperCase()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PropertyAssessment> getByWard(String ward) {
+        return csvProperties.getAllProperties().stream().
+                filter(property -> property.getLocation().getNeighbourhood().getWard().toUpperCase().contains(ward.toUpperCase()))
                 .collect(Collectors.toList());
     }
 

@@ -9,6 +9,7 @@ public interface PropertyAssessmentDAO {
     PropertyAssessment getByAccountNumber(int accountNumber);
     List<PropertyAssessment> getByAddress(String suite, int housenumber, String streetName);
     List<PropertyAssessment> getByNeighbourhood(String neighbourhood);
+    List<PropertyAssessment> getByWard(String ward);
     List<PropertyAssessment> getByAssessmentClass(String assessmentClass);
     List<PropertyAssessment> getBetweenValues(Integer min, Integer max);
     List<PropertyAssessment> getAllProperties();

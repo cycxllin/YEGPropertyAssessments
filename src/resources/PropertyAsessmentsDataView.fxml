@@ -141,6 +141,25 @@
                   <Insets left="10.0" right="10.0" />
                </VBox.margin>
             </TextField>
+            <Label prefHeight="26.0" prefWidth="695.0" text="Ward: ">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </VBox.margin>
+            </Label>
+            <TextField fx:id="wardInput">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </VBox.margin>
+            </TextField>
             <Label prefHeight="26.0" prefWidth="695.0" text="Assessment Class:">
                <font>
                   <Font size="18.0" />
@@ -233,6 +252,7 @@
                      <TableColumn fx:id="assessedValueTableColumn" editable="false" prefWidth="150.0" text="Assessed Value" />
                      <TableColumn fx:id="assessmentClassesTableColumn" editable="false" prefWidth="150.0" text="Assessment Class" />
                      <TableColumn fx:id="neighbourhoodTableColumn" editable="false" prefWidth="150.0" text="Neighbourhood" />
+                     <TableColumn fx:id="wardTableColumn" editable="false" prefWidth="200.0" text="Ward" />
                      <TableColumn fx:id="locationTableColumn" editable="false" prefWidth="200.0" text="(Latitude, Longitude)" />
                   </columns>
                   <BorderPane.margin>
