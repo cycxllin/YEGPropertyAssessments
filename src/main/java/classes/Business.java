@@ -26,6 +26,8 @@ public class Business {
         return this.name;
     }
 
+    public String getCategories(){return this.categories;}
+
     public boolean hasCategory(String category){
         if (this.categories.isEmpty())
             return false;
@@ -57,6 +59,12 @@ public class Business {
             return "Licence = " + licence + "\nName = " + name + "\nCategories = " + categories
                     + "\nAddress = \n \nNeighbourhood = \nLocation = ";
         }
+    }
+
+
+    public boolean emptyBusiness() {
+        Business empty = new Business();
+        return this.equals(empty);
     }
 
 }

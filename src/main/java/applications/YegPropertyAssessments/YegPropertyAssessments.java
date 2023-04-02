@@ -25,18 +25,18 @@ public class YegPropertyAssessments extends Application implements MapComponentI
         FXMLLoader fxmlLoader = new FXMLLoader(YegPropertyAssessments.class.getResource("/PropertyAsessmentsDataView.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         primaryStage.setTitle("Edmonton Property Assessments");
+        //primaryStage.setScene(scene);
+        //primaryStage.show();
+
+        //Create Google Map view object, you then must initialise a listener so it can be manipulated
+        //mapView = new GoogleMapView();
+        //mapView.addMapInitializedListener(this);
+
+        //Scene scene = new Scene(mapView);
+
+        primaryStage.setTitle("JavaFX and Google Maps");
         primaryStage.setScene(scene);
         primaryStage.show();
-
-//        //Create Google Map view object, you then must initialise a listener so it can be manipulated
-//        mapView = new GoogleMapView();
-//        mapView.addMapInitializedListener(this);
-//
-//        Scene scene = new Scene(mapView);
-//
-//        primaryStage.setTitle("JavaFX and Google Maps");
-//        primaryStage.setScene(scene);
-//        primaryStage.show();
     }
 
     /**
