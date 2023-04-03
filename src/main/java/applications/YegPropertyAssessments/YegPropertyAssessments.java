@@ -40,9 +40,12 @@ public class YegPropertyAssessments extends Application implements MapComponentI
         FXMLLoader fxmlLoader = new FXMLLoader(YegPropertyAssessments.class.getResource("/PropertyAsessmentsDataView.fxml"));
 
         propertyTab.setContent(fxmlLoader.load());
-        fxmlLoader = new FXMLLoader(YegPropertyAssessments.class.getResource("/BusinessesDataView.fxml"));
+        fxmlLoader = new FXMLLoader(YegPropertyAssessments.class.getResource("/test.fxml"));
         businessTab.setContent(fxmlLoader.load());
         mapTab.setContent(mapView);
+
+        //Map picture will be set here
+        //businessMapTab.setContent();
 
         //Add the tabs to the tabpane then set the scene with it
         tabPane.getTabs().addAll(propertyTab, businessTab, mapTab);

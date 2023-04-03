@@ -6,6 +6,8 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -14,6 +16,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
@@ -247,33 +250,58 @@
          </VBox>
       </AnchorPane>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-         <BorderPane layoutX="6.0" layoutY="-34.0" prefHeight="1078.0" prefWidth="1343.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <center>
-               <TableView fx:id="businessesDataTable" prefHeight="1078.0" prefWidth="1343.0" BorderPane.alignment="CENTER">
-                  <columns>
-                     <TableColumn fx:id="nameTableColumn" editable="false" prefWidth="172.0" text="Name" />
-                     <TableColumn fx:id="addressTableColumn" editable="false" prefWidth="204.0" text="Address" />
-                     <TableColumn fx:id="neighbourhoodTableColumn" editable="false" prefWidth="200.0" text="Neighbourhood" />
-                     <TableColumn fx:id="wardTableColumn" editable="false" prefWidth="193.0" text="Ward" />
-                     <TableColumn fx:id="locationTableColumn" editable="false" prefWidth="189.0" text="(Latitude, Longitude)" />
-                     <TableColumn fx:id="categoriesTableColumn" editable="false" prefWidth="189.0" text="Categories" />
-                  </columns>
-                  <BorderPane.margin>
-                     <Insets bottom="10.0" left="10.0" right="10.0" />
-                  </BorderPane.margin>
-               </TableView>
-            </center>
-            <top>
-               <Label fx:id="titleText" prefHeight="26.0" prefWidth="1817.0" text="Edmonton {business type} (2022)" BorderPane.alignment="CENTER">
-                  <font>
-                     <Font size="20.0" />
-                  </font>
-                  <BorderPane.margin>
-                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                  </BorderPane.margin>
-               </Label>
-            </top>
-         </BorderPane>
+         <children>
+            <TabPane layoutX="14.0" layoutY="-51.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Untitled Tab 1" />
+                <Tab text="Untitled Tab 2">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+            <TabPane layoutY="-3.0" prefHeight="773.0" prefWidth="1538.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Business Table">
+                     <content>
+                        <Pane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <BorderPane prefHeight="1078.0" prefWidth="1343.0">
+                                 <center>
+                                    <TableView fx:id="businessesDataTable" prefHeight="1018.0" prefWidth="1504.0" BorderPane.alignment="CENTER">
+                                       <columns>
+                                          <TableColumn fx:id="nameTableColumn" editable="false" prefWidth="172.0" text="Name" />
+                                          <TableColumn fx:id="addressTableColumn" editable="false" prefWidth="204.0" text="Address" />
+                                          <TableColumn fx:id="neighbourhoodTableColumn" editable="false" prefWidth="200.0" text="Neighbourhood" />
+                                          <TableColumn fx:id="wardTableColumn" editable="false" prefWidth="193.0" text="Ward" />
+                                          <TableColumn fx:id="locationTableColumn" editable="false" prefWidth="189.0" text="(Latitude, Longitude)" />
+                                          <TableColumn fx:id="categoriesTableColumn" editable="false" prefWidth="189.0" text="Categories" />
+                                       </columns>
+                                       <BorderPane.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" />
+                                       </BorderPane.margin>
+                                    </TableView>
+                                 </center>
+                                 <top>
+                                    <Label fx:id="titleText" prefHeight="26.0" prefWidth="1817.0" text="Edmonton {business type} (2022)" BorderPane.alignment="CENTER">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                       <BorderPane.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </BorderPane.margin>
+                                    </Label>
+                                 </top>
+                              </BorderPane>
+                           </children>
+                        </Pane>
+                     </content>
+                  </Tab>
+                <Tab text="Business Map" />
+              </tabs>
+            </TabPane>
+         </children>
       </AnchorPane>
    </SplitPane>
 </AnchorPane>
