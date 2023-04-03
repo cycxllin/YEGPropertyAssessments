@@ -40,7 +40,7 @@ public class YegPropertyAssessments extends Application implements MapComponentI
         FXMLLoader fxmlLoader = new FXMLLoader(YegPropertyAssessments.class.getResource("/PropertyAsessmentsDataView.fxml"));
 
         propertyTab.setContent(fxmlLoader.load());
-        fxmlLoader = new FXMLLoader(YegPropertyAssessments.class.getResource("/test.fxml"));
+        fxmlLoader = new FXMLLoader(YegPropertyAssessments.class.getResource("/BusinessesDataView.fxml"));
         businessTab.setContent(fxmlLoader.load());
         mapTab.setContent(mapView);
 
@@ -50,7 +50,7 @@ public class YegPropertyAssessments extends Application implements MapComponentI
         //Add the tabs to the tabpane then set the scene with it
         tabPane.getTabs().addAll(propertyTab, businessTab, mapTab);
         primaryStage.setTitle("Edmonton Property Assessments");
-        Scene scene = new Scene(tabPane, 720, 640);
+        Scene scene = new Scene(tabPane, 1920, 1080);
         primaryStage.setScene(scene);
         primaryStage.show();
 
