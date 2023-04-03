@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import main.java.DAO.*;
 import main.java.classes.*;
 
@@ -31,7 +33,7 @@ public class PropertyAssessmentDataController implements Initializable{
     @FXML
     private TableColumn<PropertyAssessment, String> neighbourhoodTableColumn;
     @FXML
-    private TableColumn<PropertyAssessment, String> wardTableColumn;
+    private TableColumn<PropertyAssessment, String> wardTC;
     @FXML
     private TableColumn<PropertyAssessment, String> locationTableColumn;
     @FXML
@@ -94,6 +96,22 @@ public class PropertyAssessmentDataController implements Initializable{
 
         //load more data
         loadMoreApiDataButton.setOnAction(event -> loadMoreData());
+
+        assessmentDataTable.setRowFactory( tv -> {
+            TableRow<PropertyAssessment> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    PropertyAssessment rowData = row.getItem();
+
+                    final ClipboardContent content = new ClipboardContent();
+                    content.putString(String.valueOf(rowData.getAccount()));
+                    Clipboard.getSystemClipboard().setContent(content);
+
+                    throwAlert("Copied to Clipboard", "Account Number Copied to Clipboard","Account number: " + rowData.getAccount());
+                }
+            });
+            return row ;
+        });
 
         //for number currency format
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
@@ -197,7 +215,7 @@ public class PropertyAssessmentDataController implements Initializable{
                 new SimpleObjectProperty<>(property.getValue().getAssessmentClasses()));
         neighbourhoodTableColumn.setCellValueFactory(property ->
                 new SimpleObjectProperty<>(property.getValue().getLocation().getNeighbourhood().getName()));
-        wardTableColumn.setCellValueFactory(property ->
+        wardTC.setCellValueFactory(property ->
                 new SimpleObjectProperty<>(property.getValue().getLocation().getNeighbourhood().getWard()));
         locationTableColumn.setCellValueFactory(property ->
                 new SimpleStringProperty(property.getValue().getLocation().getLatLon()));
@@ -240,14 +258,14 @@ public class PropertyAssessmentDataController implements Initializable{
                         The following fields must consist only of digits 0-9:
                         Account Number
                         House Number
-                        Assessed Values""");
+                        Assessed Values""", "");
             e.printStackTrace();
             return;
         }
 
        //check if any properties returned
         if (properties.stream().allMatch(PropertyAssessment::emptyProperty)){
-            throwAlert("Search Results", "No properties found");
+            throwAlert("Search Results", "No properties found", "");
         }
         else {
             checkLoad(properties);
@@ -270,10 +288,11 @@ public class PropertyAssessmentDataController implements Initializable{
         params.put(key, textField.getText());
     }
 
-    private void throwAlert(String title, String message){
+    private void throwAlert(String title, String message, String content){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(message);
+        alert.setContentText(content);
         alert.showAndWait();
     }
 

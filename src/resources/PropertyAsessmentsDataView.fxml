@@ -249,7 +249,7 @@
                      <TableColumn fx:id="assessedValueTableColumn" editable="false" prefWidth="150.0" text="Assessed Value" />
                      <TableColumn fx:id="assessmentClassesTableColumn" editable="false" prefWidth="150.0" text="Assessment Class" />
                      <TableColumn fx:id="neighbourhoodTableColumn" editable="false" prefWidth="150.0" text="Neighbourhood" />
-                     <TableColumn fx:id="wardTableColumn" editable="false" prefWidth="200.0" text="Ward" />
+                     <TableColumn fx:id="wardTC" editable="false" prefWidth="200.0" text="Ward" />
                      <TableColumn fx:id="locationTableColumn" editable="false" prefWidth="200.0" text="(Latitude, Longitude)" />
                   </columns>
                   <BorderPane.margin>

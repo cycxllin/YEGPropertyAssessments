@@ -9,7 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import main.java.DAO.BusinessDAO;
+import main.java.DAO.*;
 import main.java.classes.*;
 
 import java.net.URL;
@@ -43,6 +43,8 @@ public class BusinessesDataController implements Initializable {
     @FXML
     private Button resetButton;
     @FXML
+    private Button loadPropertyButton;
+    @FXML
     private TextField suiteInput;
     @FXML
     private TextField houseNumberInput;
@@ -53,9 +55,9 @@ public class BusinessesDataController implements Initializable {
     @FXML
     private TextField radiusInput;
     @FXML
-    private Label propertyInfo;
+    private TextField accountInput;
     @FXML
-    private AnchorPane propertyPane;
+    private Label propertyInfo;
     @FXML
     private CheckBox includePropertyBox;
     @FXML
@@ -77,12 +79,12 @@ public class BusinessesDataController implements Initializable {
 
     //filename here so it is easy to find and change
     private final String filename = "businesses_trimmed.csv";
+    private PropertyAssessment property = null;
 
     // temp property to search within radius
-    PropertyAssessment property = new PropertyAssessment(1124304, 380000, "Y", new Location(53.517970704620545,
-            -113.58016177749678, new Address(15006, "85 AVENUE NW"), new Neighbourhood(
-                    "LYNNWOOD", "sipiwiyiniwak Ward")), new AssessmentClasses(100, "RESIDENTIAL"));
-    //1124304,,15006,85 AVENUE NW,Y,4280,LYNNWOOD,sipiwiyiniwak Ward,380000,53.517970704620545,-113.58016177749678,POINT (-113.58016177749678 53.517970704620545),100,,,RESIDENTIAL,,
+    //PropertyAssessment property = new PropertyAssessment(1124304, 380000, "Y", new Location(53.517970704620545,
+    //        -113.58016177749678, new Address(15006, "85 AVENUE NW"), new Neighbourhood(
+    //                "LYNNWOOD", "sipiwiyiniwak Ward")), new AssessmentClasses(100, "RESIDENTIAL"));
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -95,14 +97,18 @@ public class BusinessesDataController implements Initializable {
         searchButton.setOnAction(event -> search());
         resetButton.setOnAction(event -> resetSearchFilters());
 
-        includePropertyBox.setOnAction(event -> setPropertyPane());
-
+        loadPropertyButton.setOnAction(event -> setPropertyPane());
     }
 
     private void setPropertyPane(){
-        propertyPane.setVisible(includePropertyBox.isSelected());
-        propertyInfo.setText("Account: " + property.getAccount() + "\n" + property.getLocation().getAddress() + "\n"
-                + property.getLocation().getNeighbourhood());
+        ApiPropertyAssessmentDAO propertyDao = new ApiPropertyAssessmentDAO();
+
+        if (accountInput.getText() != null && !accountInput.getText().isEmpty()) {
+            property = propertyDao.getByAccountNumber(Integer.parseInt(accountInput.getText()));
+            propertyInfo.setText(property.getLocation().getAddress() + "\n" + property.getLocation().getNeighbourhood());
+        }else {
+            propertyInfo.setText("");
+        }
     }
 
     private void loadBusinesses(Integer businessType) {
@@ -163,6 +169,7 @@ public class BusinessesDataController implements Initializable {
 
 
     private void search() {
+
         //build search param map
         params = new HashMap<>();
 
@@ -185,6 +192,16 @@ public class BusinessesDataController implements Initializable {
                         House Number""");
             e.printStackTrace();
             return;
+        }
+
+        if (includePropertyBox.isSelected()){
+            ApiPropertyAssessmentDAO propertyDao = new ApiPropertyAssessmentDAO();
+
+            if (accountInput.getText() != null && !accountInput.getText().isEmpty()) {
+                property = propertyDao.getByAccountNumber(Integer.parseInt(accountInput.getText()));
+            }
+
+            // cull businesses list based on property and radius
         }
 
         //check if any properties returned
